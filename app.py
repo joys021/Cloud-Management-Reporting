@@ -4,6 +4,9 @@ from flask_marshmallow import Marshmallow
 import boto3
 from botocore.client import Config
 from config import S3_BUCKET, S3_KEY, S3_SECRET
+import logging
+from botocore.exceptions import ClientError
+
 
 s3 = boto3.client('s3', aws_access_key_id=S3_KEY,
                   aws_secret_access_key=S3_SECRET)
@@ -51,6 +54,38 @@ def objj():
     obj = s3.Object(S3_BUCKET,'Hello_flask.py')
     result = sse_schema.dump(obj)
     return jsonify(result.data)
+
+
+class BucSchema(ma.Schema):
+    class Meta:
+        fields = ("Buckets","Owner")
+
+buc_schema = BucSchema()
+bucc_schema = BucSchema(many=True)
+
+@app.route('/buckets')
+def buckets():
+    client = boto3.client('s3')
+    buckets = client.list_buckets()
+    result = buc_schema.dump(buckets)
+    return jsonify(result.data)
+    
+    
+    
+
+
+@app.route('/buc')
+def bucc():
+    s3 = boto3.resource('s3')
+    bucket = s3.create_bucket(ACL='public-read-write',
+    Bucket='botflaskproj',
+    CreateBucketConfiguration={
+        'LocationConstraint': 'us-west-2'
+    })
+    
+   
+
+
 
 if __name__ == '__main__':
     app.run()
