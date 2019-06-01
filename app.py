@@ -72,8 +72,6 @@ def buckets():
     
     
     
-
-
 @app.route('/buc')
 def bucc():
     s3 = boto3.resource('s3')
@@ -83,7 +81,30 @@ def bucc():
         'LocationConstraint': 'us-west-2'
     })
     
-   
+       
+@app.route('/encrypt')
+def encrypt():
+    cl = boto3.client('s3')
+    respo = cl.put_bucket_encryption(
+    Bucket='botflaskproj',
+    ServerSideEncryptionConfiguration={
+    'Rules': [{'ApplyServerSideEncryptionByDefault': {
+            'SSEAlgorithm': 'AES256',}},]})
+    return render_template('index.html') 
+
+
+@app.route('/alencrypt')
+def alencrypt():
+    s3_resource = boto3.resource('s3')
+    cl = boto3.client('s3')
+    for bucket in s3_resource.buckets.all():
+        respo = cl.put_bucket_encryption(
+        Bucket=bucket.name,
+        ServerSideEncryptionConfiguration={
+        'Rules': [{'ApplyServerSideEncryptionByDefault': {
+        'SSEAlgorithm': 'AES256',}},]})
+    return render_template('allencrypt.html') 
+        
 
 
 
