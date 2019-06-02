@@ -56,3 +56,19 @@ Following is the sample output:
 
 API URL :http://127.0.0.1:5000/createbucket
 Purpose: This API creates a new bucket with the details given
+
+
+API URL :http://127.0.0.1:5000/encryptsinglebucket
+Purpose: This API encrypts the object in a bucket using "AES256" whose details are given to the encryption function
+Following is the sample output:
+
+```
+Encrypted the bucket Successfully
+```
+
+API URL :http://127.0.0.1:5000/encryptallbuckets
+Purpose: This API encrypts all the buckets in an account using AES256 algorithm.
+Following is the sample output:
+```
+All the buckets are encrypted Sucessfully
+```
