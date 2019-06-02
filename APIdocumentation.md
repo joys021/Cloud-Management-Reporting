@@ -1,13 +1,25 @@
+API URL: http://127.0.0.1:5000/
+Purpose: This acts like a home page 
+Following is the sample output:
+```
+Hello, Bootstrap
+```
 
 API URL: http://127.0.0.1:5000/files 
-
-Purpose: This display the details of the files in a bucket
-
+Purpose: This display the details of the files in a particular bucket
+Following is the sample output:
+```[
+  {
+    "bucket_name": "flasksummerproj", 
+    "key": "Hello_flask.py", 
+    "last_modified": "2019-05-15T13:11:08+00:00", 
+    "size": 547
+  }
+]
+```
 
 API URL: http://127.0.0.1:5000/buckets
-
-Purpose: This API will list all buckets. This will not show files within a bucket. 
-
+Purpose: This API will list all buckets in an account. This will not show the files within a bucket. 
 Following is the sample output.
 
 ```{
@@ -28,4 +40,18 @@ Following is the sample output.
 }
 ```
 
-API URL
+API URL :http://127.0.0.1:5000/objectdetails
+Purpose: This API displays the details of the objects in a particular bucket including encryption details
+Following is the sample output:
+```{
+  "bucket_name": "flasksummerproj", 
+  "key": "Hello_flask.py", 
+  "last_modified": "2019-05-15T13:11:08+00:00", 
+  "server_side_encryption": null, 
+  "sse_customer_algorithm": null, 
+  "sse_customer_key_md5": null, 
+  "ssekms_key_id": null
+}```
+
+API URL :http://127.0.0.1:5000/createbucket
+Purpose: This API creates a new bucket with the details given
