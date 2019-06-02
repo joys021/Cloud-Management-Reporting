@@ -51,7 +51,8 @@ Following is the sample output:
   "sse_customer_algorithm": null, 
   "sse_customer_key_md5": null, 
   "ssekms_key_id": null
-}```
+}
+```
 
 API URL :http://127.0.0.1:5000/createbucket
 Purpose: This API creates a new bucket with the details given
