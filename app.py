@@ -1,4 +1,4 @@
-from flask import Flask,render_template, jsonify
+from flask import Flask,render_template, jsonify,request
 from flask_bootstrap import Bootstrap
 from flask_marshmallow import Marshmallow
 import boto3
@@ -137,16 +137,47 @@ def all():
     client = boto3.client('s3')
     s3_resource = boto3.resource('s3')
     response = client.list_buckets()
+    allobjects = []
     dict = {}
     bucketnames = [bucket['Name'] for bucket in response['Buckets']]
     for x in range(len(bucketnames)):
         b = bucketnames[x]
-        dict["BucketName"] = [b] 
+        d={}
+        #d={"bucket" : b }
+        d.update( {'Bucket' : b} )
+        #d.setdefault("Bucket",[]).append(b)
         my_bucket = s3_resource.Bucket(b)
         for file in my_bucket.objects.all():
-            dict.setdefault("Filename", []).append(file.key)
-    return jsonify(dict)
+            d.setdefault("Filenames", []).append(file.key)
+        allobjects.append(d)
+    return jsonify(allobjects)
         
+#display the list of buckets
+@app.route('/allbucs')
+def allbucs():
+    s3 = boto3.client('s3');
+    response = s3.list_buckets()
+    d = {}
+    for bucket in response['Buckets']:
+        d.setdefault("Buckets", []).append(bucket['Name'])
+    return jsonify(d)
+
+@app.route('/form')
+def my_form():
+    return render_template('form.html')
+
+#input the bucket name and display the list of files in it
+@app.route('/form', methods=['POST'])
+def my_form_post():
+    text = request.form['text']
+    d = request.form['text']
+    s3_resource = boto3.resource('s3')
+    my_bucket = s3_resource.Bucket(text)
+    summaries = my_bucket.objects.all()
+    result = users_schema.dump(summaries)
+    return jsonify(result.data)
+
+
 
 
 if __name__ == '__main__':
