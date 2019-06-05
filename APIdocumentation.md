@@ -136,6 +136,36 @@ Following is the sample output:
 ]
 ```
 
+API URL :http://127.0.0.1:5000/copyinputbucketname
+Purpose : This API creates the bucket when buclet name and location is given
+Following is the sample output:
 
-
-
+Created Successfully
+```
+Created the Bucket Successfully
+```
+Error Response:
+```
+{
+  "Error": {
+    "BucketName": "inputloc", 
+    "Code": "BucketAlreadyOwnedByYou", 
+    "Message": "Your previous request to create the named bucket succeeded and you already own it."
+  }, 
+  "ResponseMetadata": {
+    "HTTPHeaders": {
+      "content-type": "application/xml", 
+      "date": "Wed, 05 Jun 2019 14:53:51 GMT", 
+      "server": "AmazonS3", 
+      "transfer-encoding": "chunked", 
+      "x-amz-bucket-region": "us-west-2", 
+      "x-amz-id-2": "ENe7yjdKHRyhCAcIsFOmnWjhfUYIjQ0LY7K+jSKE5LwHhE08eWZeflcT0goazcsW7Fzci4BJVCs=", 
+      "x-amz-request-id": "99D1349CDEBC081C"
+    }, 
+    "HTTPStatusCode": 409, 
+    "HostId": "ENe7yjdKHRyhCAcIsFOmnWjhfUYIjQ0LY7K+jSKE5LwHhE08eWZeflcT0goazcsW7Fzci4BJVCs=", 
+    "RequestId": "99D1349CDEBC081C", 
+    "RetryAttempts": 1
+  }
+}
+```
