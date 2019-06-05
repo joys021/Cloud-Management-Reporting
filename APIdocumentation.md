@@ -1,11 +1,11 @@
-API URL: http://127.0.0.1:5000/
+### 1. API URL: http://127.0.0.1:5000/
 Purpose: This acts like a home page 
 Following is the sample output:
 ```
 Hello, Bootstrap
 ```
 
-API URL: http://127.0.0.1:5000/files 
+### 2. API URL: http://127.0.0.1:5000/files 
 Purpose: This display the details of the files in a particular bucket
 Following is the sample output:
 ```[
