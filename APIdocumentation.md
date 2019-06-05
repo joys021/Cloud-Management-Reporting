@@ -72,3 +72,47 @@ Following is the sample output:
 ```
 All the buckets are encrypted Sucessfully
 ```
+
+
+API URL :http://127.0.0.1:5000/filteronlocation
+Purpose : This API displays the buckets in any particular region
+Following is the sample output:
+```
+{
+  "Bucket": "botflaskproj"
+}
+```
+API URL :http://127.0.0.1:5000/listfilesinabucket
+Purpose : This API displays the details of the files in any particular bucket when bucket name is given
+Following is the sample output:
+```
+[
+  {
+    "bucket_name": "flasksummerproj", 
+    "key": "Hello_flask.py", 
+    "last_modified": "2019-05-15T13:11:08+00:00", 
+    "size": 547
+  }, 
+  {
+    "bucket_name": "flasksummerproj", 
+    "key": "bull.png", 
+    "last_modified": "2019-06-02T22:00:07+00:00", 
+    "size": 20168
+  }
+]
+```
+
+
+API URL :http://127.0.0.1:5000/allbuckets
+Purpose : This API displays the list of bucket names in an account
+Following is the sample output:
+```
+{
+  "Buckets": [
+    "botflaskproj", 
+    "flasksummerproj"
+  ]
+}
+```
+
+
