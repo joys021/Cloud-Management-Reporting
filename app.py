@@ -1,3 +1,5 @@
+from flask import Flask, render_template, flash, request
+from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from flask import Flask,render_template, jsonify,request
 from flask_bootstrap import Bootstrap
 from flask_marshmallow import Marshmallow
@@ -6,6 +8,8 @@ from botocore.client import Config
 from config import S3_BUCKET, S3_KEY, S3_SECRET
 import logging
 from botocore.exceptions import ClientError
+import os
+
 
 
 s3 = boto3.client('s3', aws_access_key_id=S3_KEY,
@@ -13,8 +17,10 @@ s3 = boto3.client('s3', aws_access_key_id=S3_KEY,
 
 app = Flask(__name__)
 ma = Marshmallow(app)
+app.config.from_object(__name__)
 
 
+    
 class UserSchema(ma.Schema):
     class Meta:
         fields = ("bucket_name", "key", "last_modified","size")
@@ -119,6 +125,7 @@ class ObjSchema(ma.Schema):
 obj_schema = ObjSchema()
 objj_schema = ObjSchema(many=True)
 
+#displays the details of the files in any particular bucket
 @app.route('/allfiles')
 def allfiles():
     client = boto3.client('s3')
@@ -131,7 +138,7 @@ def allfiles():
     result = obj_schema.dump(response)
     return jsonify(result.data)
     
-
+#display all the buckets and the files in it.
 @app.route('/all')
 def all():
     client = boto3.client('s3')
@@ -162,6 +169,8 @@ def allbucs():
         d.setdefault("Buckets", []).append(bucket['Name'])
     return jsonify(d)
 
+#display the bucket details when name of the bucket is given
+
 @app.route('/form')
 def my_form():
     return render_template('form.html')
@@ -170,14 +179,36 @@ def my_form():
 @app.route('/form', methods=['POST'])
 def my_form_post():
     text = request.form['text']
-    d = request.form['text']
+    d = request.form['loc']
     s3_resource = boto3.resource('s3')
     my_bucket = s3_resource.Bucket(text)
     summaries = my_bucket.objects.all()
     result = users_schema.dump(summaries)
     return jsonify(result.data)
 
+#display the buckets in a particular region
 
+@app.route('/for')
+def my_for():
+    return render_template('for.html')
+
+
+@app.route('/for', methods=['POST'])
+def my():
+    l = request.form['loc']
+    s3 = boto3.client("s3")
+    d = {}
+    for bucket in s3.list_buckets()["Buckets"]:
+        if s3.get_bucket_location(Bucket=bucket['Name'])['LocationConstraint'] == l:
+            d.update( {'Bucket' : bucket["Name"]} )          
+    return jsonify(d)
+    #text = request.form['text']
+    #d = request.form['loc']
+    #s3_resource = boto3.resource('s3')
+    #my_bucket = s3_resource.Bucket(text)
+    #summaries = my_bucket.objects.all()
+    #result = users_schema.dump(summaries)
+    #return jsonify(result.data)
 
 
 if __name__ == '__main__':
