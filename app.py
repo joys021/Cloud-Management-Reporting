@@ -9,6 +9,7 @@ from config import S3_BUCKET, S3_KEY, S3_SECRET
 import logging
 from botocore.exceptions import ClientError
 import os
+from botocore.exceptions import ClientError
 
 
 
@@ -90,7 +91,7 @@ def createbucket():
     CreateBucketConfiguration={
         'LocationConstraint': 'us-west-2'
     })
-    
+    return render_template('index.html')
 
 #encrypt single bucket       
 @app.route('/encryptsinglebucket')
@@ -160,7 +161,7 @@ def all():
     return jsonify(allobjects)
         
 #display the list of buckets
-@app.route('/allbucs')
+@app.route('/allbuckets')
 def allbucs():
     s3 = boto3.client('s3');
     response = s3.list_buckets()
@@ -171,15 +172,14 @@ def allbucs():
 
 #display the bucket details when name of the bucket is given
 
-@app.route('/form')
+@app.route('/listfilesinabucket')
 def my_form():
     return render_template('form.html')
 
 #input the bucket name and display the list of files in it
-@app.route('/form', methods=['POST'])
+@app.route('/listfilesinabucket', methods=['POST'])
 def my_form_post():
     text = request.form['text']
-    d = request.form['loc']
     s3_resource = boto3.resource('s3')
     my_bucket = s3_resource.Bucket(text)
     summaries = my_bucket.objects.all()
@@ -188,12 +188,12 @@ def my_form_post():
 
 #display the buckets in a particular region
 
-@app.route('/for')
+@app.route('/filteronlocation')
 def my_for():
     return render_template('for.html')
 
 
-@app.route('/for', methods=['POST'])
+@app.route('/filteronlocation', methods=['POST'])
 def my():
     l = request.form['loc']
     s3 = boto3.client("s3")
@@ -209,6 +209,53 @@ def my():
     #summaries = my_bucket.objects.all()
     #result = users_schema.dump(summaries)
     #return jsonify(result.data)
+
+
+#create new bucket based on user's choice of location   
+
+@app.route('/inputbucketname')
+def inputbucket():
+    return render_template('create.html')
+
+
+@app.route('/inputbucketname', methods=['POST'])
+
+def createbucketinput():
+    name = request.form['name']
+    location = request.form['loc']
+    s3 = boto3.resource('s3')
+    bucket = s3.create_bucket(ACL='public-read-write',
+    Bucket=name,
+    CreateBucketConfiguration={
+        'LocationConstraint': location
+    })
+    return render_template('index.html')
+
+
+@app.route('/copyinputbucketname')
+def copyinputbucket():
+    return render_template('create.html')
+
+
+@app.route('/copyinputbucketname', methods=['POST'])
+
+def copycreatebucketinput():
+    name = request.form['name']
+    location = request.form['loc']
+    s3 = boto3.resource('s3')
+    try:
+        bucket = s3.create_bucket(ACL='public-read-write',
+        Bucket=name,
+        CreateBucketConfiguration={
+          'LocationConstraint': location
+        })
+        return render_template('createbucket.html')
+    except ClientError as e:
+        return jsonify(e.response)
+        
+        
+
+
 
 
 if __name__ == '__main__':
