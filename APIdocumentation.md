@@ -115,4 +115,27 @@ Following is the sample output:
 }
 ```
 
+API URL :http://127.0.0.1:5000/all
+Purpose : This API displays all the buckets and files in it
+Following is the sample output:
+```
+[
+  {
+    "Bucket": "botflaskproj", 
+    "Filenames": [
+      "Sample.txt"
+    ]
+  }, 
+  {
+    "Bucket": "flasksummerproj", 
+    "Filenames": [
+      "Hello_flask.py", 
+      "bull.png"
+    ]
+  }
+]
+```
+
+
+
 
