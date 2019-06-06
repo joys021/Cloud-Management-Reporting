@@ -93,7 +93,6 @@ Following is the sample output:
 
 Following is the sample output:
 
-Created Successfully
 ```
 Created the Bucket Successfully
 ```
@@ -154,7 +153,7 @@ Following is the sample output:
 
 
 
-## Few APIs that would perform basic functions
+# Few APIs that would perform basic functions
 
 ### * API URL: http://127.0.0.1:5000/files 
 **Purpose:** This display the details of the files in a particular bucket
