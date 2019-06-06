@@ -1,12 +1,15 @@
-### 1. API URL: http://127.0.0.1:5000/
-Purpose: This acts like a home page 
+### 1. **API URL: ** http://127.0.0.1:5000/
+
+**Purpose:** This acts like a home page
+
 Following is the sample output:
 ```
 Hello, Bootstrap
 ```
 
 ### 2. API URL: http://127.0.0.1:5000/files 
-Purpose: This display the details of the files in a particular bucket
+**Purpose:** This display the details of the files in a particular bucket
+
 Following is the sample output:
 ```[
   {
@@ -18,8 +21,9 @@ Following is the sample output:
 ]
 ```
 
-API URL: http://127.0.0.1:5000/buckets
-Purpose: This API will list all buckets in an account. This will not show the files within a bucket. 
+### 3. API URL: http://127.0.0.1:5000/buckets
+**Purpose:** This API will list all buckets in an account. This will not show the files within a bucket. 
+
 Following is the sample output.
 
 ```{
@@ -40,8 +44,9 @@ Following is the sample output.
 }
 ```
 
-API URL :http://127.0.0.1:5000/objectdetails
-Purpose: This API displays the details of the objects in a particular bucket including encryption details
+### 4. API URL :http://127.0.0.1:5000/objectdetails
+**Purpose:** This API displays the details of the objects in a particular bucket including encryption details
+
 Following is the sample output:
 ```{
   "bucket_name": "flasksummerproj", 
@@ -54,36 +59,40 @@ Following is the sample output:
 }
 ```
 
-API URL :http://127.0.0.1:5000/createbucket
-Purpose: This API creates a new bucket with the details given
+### 5. API URL :http://127.0.0.1:5000/createbucket
+**Purpose:** This API creates a new bucket with the details given
 
 
 API URL :http://127.0.0.1:5000/encryptsinglebucket
 Purpose: This API encrypts the object in a bucket using "AES256" whose details are given to the encryption function
+
 Following is the sample output:
 
 ```
 Encrypted the bucket Successfully
 ```
 
-API URL :http://127.0.0.1:5000/encryptallbuckets
-Purpose: This API encrypts all the buckets in an account using AES256 algorithm.
+### 6. API URL :http://127.0.0.1:5000/encryptallbuckets
+**Purpose:** This API encrypts all the buckets in an account using AES256 algorithm.
+
 Following is the sample output:
 ```
 All the buckets are encrypted Sucessfully
 ```
 
 
-API URL :http://127.0.0.1:5000/filteronlocation
-Purpose : This API displays the buckets in any particular region
+### 7. API URL :http://127.0.0.1:5000/filteronlocation
+**Purpose:** This API displays the buckets in any particular region
+
 Following is the sample output:
 ```
 {
   "Bucket": "botflaskproj"
 }
 ```
-API URL :http://127.0.0.1:5000/listfilesinabucket
-Purpose : This API displays the details of the files in any particular bucket when bucket name is given
+### 8.API URL :http://127.0.0.1:5000/listfilesinabucket
+**Purpose :** This API displays the details of the files in any particular bucket when bucket name is given
+
 Following is the sample output:
 ```
 [
@@ -103,8 +112,9 @@ Following is the sample output:
 ```
 
 
-API URL :http://127.0.0.1:5000/allbuckets
-Purpose : This API displays the list of bucket names in an account
+### 9. API URL :http://127.0.0.1:5000/allbuckets
+**Purpose :** This API displays the list of bucket names in an account
+
 Following is the sample output:
 ```
 {
@@ -115,8 +125,9 @@ Following is the sample output:
 }
 ```
 
-API URL :http://127.0.0.1:5000/all
-Purpose : This API displays all the buckets and files in it
+### 10. API URL :http://127.0.0.1:5000/all
+**Purpose :** This API displays all the buckets and files in it
+
 Following is the sample output:
 ```
 [
@@ -136,8 +147,9 @@ Following is the sample output:
 ]
 ```
 
-API URL :http://127.0.0.1:5000/copyinputbucketname
-Purpose : This API creates the bucket when buclet name and location is given
+### 11. API URL :http://127.0.0.1:5000/copyinputbucketname
+**Purpose :** This API creates the bucket when buclet name and location is given
+
 Following is the sample output:
 
 Created Successfully
@@ -151,6 +163,7 @@ Error Response:
     "BucketName": "inputloc", 
     "Code": "BucketAlreadyOwnedByYou", 
     "Message": "Your previous request to create the named bucket succeeded and you already own it."
+    
   }, 
   "ResponseMetadata": {
     "HTTPHeaders": {
