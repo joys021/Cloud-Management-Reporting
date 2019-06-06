@@ -1,4 +1,4 @@
-### 1. **API URL: ** http://127.0.0.1:5000/
+### 1. API URL: http://127.0.0.1:5000/
 
 **Purpose:** This acts like a home page
 
