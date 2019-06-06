@@ -44,7 +44,7 @@ Following is the sample output.
 }
 ```
 
-### 4. API URL :http://127.0.0.1:5000/objectdetails
+### 4. API URL : http://127.0.0.1:5000/objectdetails
 **Purpose:** This API displays the details of the objects in a particular bucket including encryption details
 
 Following is the sample output:
@@ -59,11 +59,11 @@ Following is the sample output:
 }
 ```
 
-### 5. API URL :http://127.0.0.1:5000/createbucket
+### 5. API URL : http://127.0.0.1:5000/createbucket
 **Purpose:** This API creates a new bucket with the details given
 
 
-API URL :http://127.0.0.1:5000/encryptsinglebucket
+### 6. API URL : http://127.0.0.1:5000/encryptsinglebucket
 Purpose: This API encrypts the object in a bucket using "AES256" whose details are given to the encryption function
 
 Following is the sample output:
@@ -72,7 +72,7 @@ Following is the sample output:
 Encrypted the bucket Successfully
 ```
 
-### 6. API URL :http://127.0.0.1:5000/encryptallbuckets
+### 7. API URL : http://127.0.0.1:5000/encryptallbuckets
 **Purpose:** This API encrypts all the buckets in an account using AES256 algorithm.
 
 Following is the sample output:
@@ -81,7 +81,7 @@ All the buckets are encrypted Sucessfully
 ```
 
 
-### 7. API URL :http://127.0.0.1:5000/filteronlocation
+### 8. API URL : http://127.0.0.1:5000/filteronlocation
 **Purpose:** This API displays the buckets in any particular region
 
 Following is the sample output:
@@ -90,7 +90,7 @@ Following is the sample output:
   "Bucket": "botflaskproj"
 }
 ```
-### 8.API URL :http://127.0.0.1:5000/listfilesinabucket
+### 9.API URL : http://127.0.0.1:5000/listfilesinabucket
 **Purpose :** This API displays the details of the files in any particular bucket when bucket name is given
 
 Following is the sample output:
@@ -112,7 +112,7 @@ Following is the sample output:
 ```
 
 
-### 9. API URL :http://127.0.0.1:5000/allbuckets
+### 10. API URL : http://127.0.0.1:5000/allbuckets
 **Purpose :** This API displays the list of bucket names in an account
 
 Following is the sample output:
@@ -125,7 +125,7 @@ Following is the sample output:
 }
 ```
 
-### 10. API URL :http://127.0.0.1:5000/all
+### 11. API URL : http://127.0.0.1:5000/all
 **Purpose :** This API displays all the buckets and files in it
 
 Following is the sample output:
@@ -147,7 +147,7 @@ Following is the sample output:
 ]
 ```
 
-### 11. API URL :http://127.0.0.1:5000/copyinputbucketname
+### 12. API URL : http://127.0.0.1:5000/copyinputbucketname
 **Purpose :** This API creates the bucket when buclet name and location is given
 
 Following is the sample output:
