@@ -155,8 +155,8 @@ Following is the sample output:
 
 # Few APIs that would perform basic functions
 
-### * API URL: http://127.0.0.1:5000/files 
-**Purpose:** This display the details of the files in a particular bucket
+### * API URL: http://127.0.0.1:5000/files?bucket=flasksummerproj 
+**Purpose:** This display the details of the files in a particular bucket that is passed in the url
 
 Following is the sample output:
 ```[
