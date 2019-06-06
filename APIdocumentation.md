@@ -1,4 +1,4 @@
-### 1. API URL: http://127.0.0.1:5000/
+### 1. API URL:[Home Page](http://127.0.0.1:5000/)
 
 **Purpose:** This acts like a home page
 
@@ -7,7 +7,7 @@ Following is the sample output:
 Hello, Bootstrap
 ```
 
-### 2. API URL: http://127.0.0.1:5000/buckets
+### 2. API URL: [All buckets in an account](http://127.0.0.1:5000/buckets)
 **Purpose:** This API will list all buckets in an account. This will not show the files within a bucket. 
 
 Following is the sample output.
@@ -30,7 +30,7 @@ Following is the sample output.
 }
 ```
 
-### 3. API URL : http://127.0.0.1:5000/objectdetails
+### 3. API URL : [Details of an object](http://127.0.0.1:5000/objectdetails)
 **Purpose:** This API displays the details of an object that is given in a given bucket including encryption details. That is, when a bucket name and file name is given, it would display the detials of the file.
 
 Following is the sample output:
@@ -45,7 +45,7 @@ Following is the sample output:
 }
 ```
 
-### 4. API URL : http://127.0.0.1:5000/listfilesinabucket
+### 4. API URL : [List details of all files in a bucket](http://127.0.0.1:5000/listfilesinabucket)
 **Purpose :** This API displays the details of all the files in a bucket that is given
 
 Following is the sample output:
@@ -66,7 +66,7 @@ Following is the sample output:
 ]
 ```
 
-### 5. API URL : http://127.0.0.1:5000/all
+### 5. API URL : [List all buckets and files](http://127.0.0.1:5000/all)
 **Purpose :** This API displays all the buckets and files in it
 
 Following is the sample output:
@@ -88,7 +88,7 @@ Following is the sample output:
 ]
 ```
 
-### 6. API URL : http://127.0.0.1:5000/copyinputbucketname
+### 6. API URL : [Create Bucket](http://127.0.0.1:5000/copyinputbucketname)
 **Purpose :** This API creates the bucket when bucket name and location is given
 
 Following is the sample output:
@@ -124,7 +124,7 @@ Error Response:
 }
 ```
 
-### 7. API URL : http://127.0.0.1:5000/encryptsinglebucket
+### 7. API URL : [Encrypt Single Bucket](http://127.0.0.1:5000/encryptsinglebucket)
 Purpose: This API encrypts the object in a bucket using "AES256" whose details are given to the encryption function
 
 Following is the sample output:
@@ -133,7 +133,7 @@ Following is the sample output:
 Encrypted the bucket Successfully
 ```
 
-### 8. API URL : http://127.0.0.1:5000/encryptallbuckets
+### 8. API URL : [Encrypt All buckets](http://127.0.0.1:5000/encryptallbuckets)
 **Purpose:** This API encrypts all the buckets in an account using AES256 algorithm.
 
 Following is the sample output:
@@ -142,7 +142,7 @@ All the buckets are encrypted Sucessfully
 ```
 
 
-### 9. API URL : http://127.0.0.1:5000/filteronlocation
+### 9. API URL : [Filter buckets based on location](http://127.0.0.1:5000/filteronlocation)
 **Purpose:** This API displays the buckets in any particular region
 
 Following is the sample output:
