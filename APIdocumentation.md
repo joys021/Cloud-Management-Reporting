@@ -45,7 +45,7 @@ Following is the sample output:
 }
 ```
 
-### 4.API URL : http://127.0.0.1:5000/listfilesinabucket
+### 4. API URL : http://127.0.0.1:5000/listfilesinabucket
 **Purpose :** This API displays the details of all the files in a bucket that is given
 
 Following is the sample output:
