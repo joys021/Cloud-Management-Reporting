@@ -38,13 +38,23 @@ def index():
 
 
 #display the details of the files in a bucket
-@app.route('/files')
+@app.route('/files', methods=['GET'])
 def files():
+    bucket_name_m=request.args.get('bucket')
     s3_resource = boto3.resource('s3')
-    my_bucket = s3_resource.Bucket(S3_BUCKET)
-    summaries = my_bucket.objects.all()
-    result = users_schema.dump(summaries)
-    return jsonify(result.data)
+    err = {}
+    err.update({'message':"400"})
+    try:
+        my_bucket = s3_resource.Bucket(bucket_name_m)
+        summaries = my_bucket.objects.all()
+        result = users_schema.dump(summaries)
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':result.data})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
     #return jsonify({'in':'progress'})
     #return render_template('files.html', my_bucket=my_bucket, files=summaries)
     
@@ -61,10 +71,18 @@ sses_schema = SSeSchema(many=True)
 @app.route('/objectdetails')
 def objectdetails():
     s3 = boto3.resource('s3')
-    obj = s3.Object(S3_BUCKET,'Hello_flask.py')
-    result = sse_schema.dump(obj)
-    return jsonify(result.data)
-
+    err = {}
+    err.update({'message':"400"})
+    try:
+        obj = s3.Object(S3_BUCKET,'Hello_flask.py')
+        result = sse_schema.dump(obj)
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':result.data})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
 
 class BucSchema(ma.Schema):
     class Meta:
@@ -74,35 +92,62 @@ buc_schema = BucSchema()
 bucc_schema = BucSchema(many=True)
 
 #display the list of buckets 
-@app.route('/buckets')
+@app.route('/buckets')  
 def buckets():
     client = boto3.client('s3')
-    buckets = client.list_buckets()
-    result = buc_schema.dump(buckets)
-    return jsonify(result.data)
+    err = {}
+    err.update({'message':"400"})
+    try:
+        buckets = client.list_buckets()
+        result = buc_schema.dump(buckets)
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':result.data})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
     
     
 #create new bucket    
 @app.route('/createbucket')
 def createbucket():
     s3 = boto3.resource('s3')
-    bucket = s3.create_bucket(ACL='public-read-write',
-    Bucket='botflaskproj',
-    CreateBucketConfiguration={
-        'LocationConstraint': 'us-west-2'
-    })
-    return render_template('index.html')
+    err = {}
+    err.update({'message':"400"})
+    try:
+        bucket = s3.create_bucket(ACL='public-read-write',
+        Bucket='botflas',
+        CreateBucketConfiguration={
+            'LocationConstraint': 'us-west-2'
+        })
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':"Bucket Created Successfully"})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
 
 #encrypt single bucket       
 @app.route('/encryptsinglebucket')
 def encryptsinglebucket():
     cl = boto3.client('s3')
-    respo = cl.put_bucket_encryption(
-    Bucket='botflaskproj',
-    ServerSideEncryptionConfiguration={
-    'Rules': [{'ApplyServerSideEncryptionByDefault': {
-            'SSEAlgorithm': 'AES256',}},]})
-    return render_template('encrypt.html') 
+    err = {}
+    err.update({'message':"400"})
+    try:
+        respo = cl.put_bucket_encryption(
+           Bucket='botflaskproj',
+           ServerSideEncryptionConfiguration={
+            'Rules': [{'ApplyServerSideEncryptionByDefault': {
+                'SSEAlgorithm': 'AES256',}},]})
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':"Bucket encrypted Successfully"})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
 
 
 #encrypt all the buckets in an account
@@ -110,13 +155,22 @@ def encryptsinglebucket():
 def encryptallbuckets():
     s3_resource = boto3.resource('s3')
     cl = boto3.client('s3')
-    for bucket in s3_resource.buckets.all():
-        respo = cl.put_bucket_encryption(
-        Bucket=bucket.name,
-        ServerSideEncryptionConfiguration={
-        'Rules': [{'ApplyServerSideEncryptionByDefault': {
-        'SSEAlgorithm': 'AES256',}},]})
-    return render_template('allencrypt.html') 
+    err = {}
+    err.update({'message':"400"})
+    try:
+        for bucket in s3_resource.buckets.all():
+            respo = cl.put_bucket_encryption(
+                Bucket=bucket.name,
+                ServerSideEncryptionConfiguration={
+                'Rules': [{'ApplyServerSideEncryptionByDefault': {
+                'SSEAlgorithm': 'AES256',}},]})
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':"All the Buckets are encrypted Successfully"})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
         
 
 class ObjSchema(ma.Schema):
@@ -126,49 +180,57 @@ class ObjSchema(ma.Schema):
 obj_schema = ObjSchema()
 objj_schema = ObjSchema(many=True)
 
-#displays the details of the files in any particular bucket
-@app.route('/allfiles')
-def allfiles():
-    client = boto3.client('s3')
-    s3_resource = boto3.resource('s3')
-    response = client.list_buckets()
-    bucketnames = [bucket['Name'] for bucket in response['Buckets']]
-    for x in range(len(bucketnames)):
-        b=bucketnames[x]
-        response = client.list_objects(Bucket=b)
-    result = obj_schema.dump(response)
-    return jsonify(result.data)
-    
+
+        
 #display all the buckets and the files in it.
 @app.route('/all')
 def all():
     client = boto3.client('s3')
     s3_resource = boto3.resource('s3')
-    response = client.list_buckets()
-    allobjects = []
-    dict = {}
-    bucketnames = [bucket['Name'] for bucket in response['Buckets']]
-    for x in range(len(bucketnames)):
-        b = bucketnames[x]
-        d={}
-        #d={"bucket" : b }
-        d.update( {'Bucket' : b} )
-        #d.setdefault("Bucket",[]).append(b)
-        my_bucket = s3_resource.Bucket(b)
-        for file in my_bucket.objects.all():
-            d.setdefault("Filenames", []).append(file.key)
-        allobjects.append(d)
-    return jsonify(allobjects)
+    err = {}
+    err.update({'message':"400"})
+    try:
+        response = client.list_buckets()
+        allobjects = []
+        #dict = {}
+        bucketnames = [bucket['Name'] for bucket in response['Buckets']]
+        for x in range(len(bucketnames)):
+            b = bucketnames[x]
+            d={}
+            d.update( {'Bucket' : b} )
+            my_bucket = s3_resource.Bucket(b)
+            for file in my_bucket.objects.all():
+                d.setdefault("Filenames", []).append(file.key)
+            allobjects.append(d)
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':allobjects})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+        
+        
+        
         
 #display the list of buckets
 @app.route('/allbuckets')
 def allbucs():
-    s3 = boto3.client('s3');
-    response = s3.list_buckets()
-    d = {}
-    for bucket in response['Buckets']:
-        d.setdefault("Buckets", []).append(bucket['Name'])
-    return jsonify(d)
+    s3 = boto3.client('s3')
+    err = {}
+    err.update({'message':"400"})
+    try:
+        response = s3.list_buckets()
+        d = {}
+        for bucket in response['Buckets']:
+            d.setdefault("Buckets", []).append(bucket['Name'])
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':d})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
 
 #display the bucket details when name of the bucket is given
 
@@ -186,6 +248,27 @@ def my_form_post():
     result = users_schema.dump(summaries)
     return jsonify(result.data)
 
+
+@app.route('/listfilesparam', methods=['GET'])
+def listfilesparam():
+    bucket_name=request.args.get('bucket')
+    s3_resource = boto3.resource('s3')
+    err = {}
+    err.update({'message':"400"})
+    try:
+        my_bucket = s3_resource.Bucket(bucket_name)
+        summaries = my_bucket.objects.all()
+        result = users_schema.dump(summaries)
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':result.data})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+    
+
+
 #display the buckets in a particular region
 
 @app.route('/filteronlocation')
@@ -202,13 +285,28 @@ def my():
         if s3.get_bucket_location(Bucket=bucket['Name'])['LocationConstraint'] == l:
             d.update( {'Bucket' : bucket["Name"]} )          
     return jsonify(d)
-    #text = request.form['text']
-    #d = request.form['loc']
-    #s3_resource = boto3.resource('s3')
-    #my_bucket = s3_resource.Bucket(text)
-    #summaries = my_bucket.objects.all()
-    #result = users_schema.dump(summaries)
-    #return jsonify(result.data)
+
+
+#filter on location , location is passed as parameter
+
+@app.route('/filteronlocationparam', methods=['GET'])
+def mylocparam():
+    location=request.args.get('location')
+    s3 = boto3.client("s3")
+    d = {}
+    err = {}
+    err.update({'message':"400"})
+    try:
+        for bucket in s3.list_buckets()["Buckets"]:
+            if s3.get_bucket_location(Bucket=bucket['Name'])['LocationConstraint'] == location:
+                d.update( {'Bucket' : bucket["Name"]} )          
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':d})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
 
 
 #create new bucket based on user's choice of location   
@@ -231,7 +329,7 @@ def createbucketinput():
     })
     return render_template('index.html')
 
-
+#create new bucket with the inputs given by the user
 @app.route('/copyinputbucketname')
 def copyinputbucket():
     return render_template('create.html')
@@ -252,11 +350,32 @@ def copycreatebucketinput():
         return render_template('createbucket.html')
     except ClientError as e:
         return jsonify(e.response)
+ 
+
+#create new bucket with the values passed as parameters
+#http://127.0.0.1:5000/createbucketparam?bucket=iinnppuutloc&location=us-west-1
+@app.route('/createbucketparam', methods=['GET'])
+def createbucketparam():
+    bucket_name=request.args.get('bucket')
+    location=request.args.get('location')
+    s3 = boto3.resource('s3')
+    err = {}
+    err.update({'message':"400"})
+    try:
+        bucket = s3.create_bucket(ACL='public-read-write',
+        Bucket=bucket_name,
+        CreateBucketConfiguration={
+          'LocationConstraint': location
+        })
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':"Created Bucket Successfully"})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
         
-        
-
-
-
+       
 
 if __name__ == '__main__':
     app.run()
