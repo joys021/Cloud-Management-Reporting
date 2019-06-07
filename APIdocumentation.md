@@ -13,20 +13,35 @@ Hello, Bootstrap
 Following is the sample output.
 
 ```{
-  "Buckets": [
-    {
-      "CreationDate": "Sun, 19 May 2019 20:55:34 GMT", 
-      "Name": "botflaskproj"
-    }, 
-    {
-      "CreationDate": "Wed, 15 May 2019 13:09:24 GMT", 
-      "Name": "flasksummerproj"
+  "data": {
+    "Buckets": [
+      {
+        "CreationDate": "Thu, 06 Jun 2019 22:24:04 GMT", 
+        "Name": "botflas"
+      }, 
+      {
+        "CreationDate": "Sun, 19 May 2019 20:55:34 GMT", 
+        "Name": "botflaskproj"
+      }, 
+      {
+        "CreationDate": "Wed, 15 May 2019 13:09:24 GMT", 
+        "Name": "flasksummerproj"
+      }, 
+      {
+        "CreationDate": "Thu, 06 Jun 2019 21:45:09 GMT", 
+        "Name": "iinnppuutloc"
+      }, 
+      {
+        "CreationDate": "Wed, 05 Jun 2019 14:53:46 GMT", 
+        "Name": "inputloc"
+      }
+    ], 
+    "Owner": {
+      "DisplayName": "joys021", 
+      "ID": "3d1ece2b6f62d28d74b805dc7a17d70c325e04d12bb6e066ca01a0a4c8c15877"
     }
-  ], 
-  "Owner": {
-    "DisplayName": "joys021", 
-    "ID": "3d1ece2b6f62d28d74b805dc7a17d70c325e04d12bb6e066ca01a0a4c8c15877"
-  }
+  }, 
+  "message": "200"
 }
 ```
 
@@ -35,35 +50,41 @@ Following is the sample output.
 
 Following is the sample output:
 ```{
-  "bucket_name": "flasksummerproj", 
-  "key": "Hello_flask.py", 
-  "last_modified": "2019-05-15T13:11:08+00:00", 
-  "server_side_encryption": null, 
-  "sse_customer_algorithm": null, 
-  "sse_customer_key_md5": null, 
-  "ssekms_key_id": null
+  "data": {
+    "bucket_name": "flasksummerproj", 
+    "key": "Hello_flask.py", 
+    "last_modified": "2019-05-15T13:11:08+00:00", 
+    "server_side_encryption": null, 
+    "sse_customer_algorithm": null, 
+    "sse_customer_key_md5": null, 
+    "ssekms_key_id": null
+  }, 
+  "message": "200"
 }
 ```
 
 ### 4. API URL : [List details of all files in a bucket](http://127.0.0.1:5000/listfilesinabucket)
 **Purpose :** This API displays the details of all the files in a bucket that is given
-
+**Bucket name passed as parameter** - http://127.0.0.1:5000/listfilesparam?bucket=flasksummerproj
 Following is the sample output:
 ```
-[
-  {
-    "bucket_name": "flasksummerproj", 
-    "key": "Hello_flask.py", 
-    "last_modified": "2019-05-15T13:11:08+00:00", 
-    "size": 547
-  }, 
-  {
-    "bucket_name": "flasksummerproj", 
-    "key": "bull.png", 
-    "last_modified": "2019-06-02T22:00:07+00:00", 
-    "size": 20168
-  }
-]
+{
+  "data": [
+    {
+      "bucket_name": "flasksummerproj", 
+      "key": "Hello_flask.py", 
+      "last_modified": "2019-05-15T13:11:08+00:00", 
+      "size": 547
+    }, 
+    {
+      "bucket_name": "flasksummerproj", 
+      "key": "bull.png", 
+      "last_modified": "2019-06-02T22:00:07+00:00", 
+      "size": 20168
+    }
+  ], 
+  "message": "200"
+}
 ```
 
 ### 5. API URL : [List all buckets and files](http://127.0.0.1:5000/all)
@@ -71,55 +92,52 @@ Following is the sample output:
 
 Following is the sample output:
 ```
-[
-  {
-    "Bucket": "botflaskproj", 
-    "Filenames": [
-      "Sample.txt"
-    ]
-  }, 
-  {
-    "Bucket": "flasksummerproj", 
-    "Filenames": [
-      "Hello_flask.py", 
-      "bull.png"
-    ]
-  }
-]
+{
+  "data": [
+    {
+      "Bucket": "botflas"
+    }, 
+    {
+      "Bucket": "botflaskproj", 
+      "Filenames": [
+        "Sample.txt"
+      ]
+    }, 
+    {
+      "Bucket": "flasksummerproj", 
+      "Filenames": [
+        "Hello_flask.py", 
+        "bull.png"
+      ]
+    }, 
+    {
+      "Bucket": "iinnppuutloc"
+    }, 
+    {
+      "Bucket": "inputloc"
+    }
+  ], 
+  "message": "200"
+}
 ```
 
 ### 6. API URL : [Create Bucket](http://127.0.0.1:5000/copyinputbucketname)
 **Purpose :** This API creates the bucket when bucket name and location is given
+**Bucket name and location passed as parameters in url ** - http://127.0.0.1:5000/createbucketparam?bucket=uutloc&location=us-west-1
 
 Following is the sample output:
 
 ```
-Created the Bucket Successfully
+{
+  "data": "Created Bucket Successfully", 
+  "message": "200"
+}
 ```
 Error Response:
 ```
 {
-  "Error": {
-    "BucketName": "inputloc", 
-    "Code": "BucketAlreadyOwnedByYou", 
-    "Message": "Your previous request to create the named bucket succeeded and you already own it."
-    
-  }, 
-  "ResponseMetadata": {
-    "HTTPHeaders": {
-      "content-type": "application/xml", 
-      "date": "Wed, 05 Jun 2019 14:53:51 GMT", 
-      "server": "AmazonS3", 
-      "transfer-encoding": "chunked", 
-      "x-amz-bucket-region": "us-west-2", 
-      "x-amz-id-2": "ENe7yjdKHRyhCAcIsFOmnWjhfUYIjQ0LY7K+jSKE5LwHhE08eWZeflcT0goazcsW7Fzci4BJVCs=", 
-      "x-amz-request-id": "99D1349CDEBC081C"
-    }, 
-    "HTTPStatusCode": 409, 
-    "HostId": "ENe7yjdKHRyhCAcIsFOmnWjhfUYIjQ0LY7K+jSKE5LwHhE08eWZeflcT0goazcsW7Fzci4BJVCs=", 
-    "RequestId": "99D1349CDEBC081C", 
-    "RetryAttempts": 1
-  }
+  "Error": "BucketAlreadyOwnedByYou", 
+  "message": "400"
 }
 ```
 
@@ -129,7 +147,10 @@ Purpose: This API encrypts the object in a bucket using "AES256" whose details a
 Following is the sample output:
 
 ```
-Encrypted the bucket Successfully
+{
+  "data": "Bucket encrypted Successfully", 
+  "message": "200"
+}
 ```
 
 ### 8. API URL : [Encrypt All buckets](http://127.0.0.1:5000/encryptallbuckets)
@@ -137,21 +158,25 @@ Encrypted the bucket Successfully
 
 Following is the sample output:
 ```
-All the buckets are encrypted Sucessfully
+{
+  "data": "All the Buckets are encrypted Successfully", 
+  "message": "200"
+}
 ```
 
 
 ### 9. API URL : [Filter buckets based on location](http://127.0.0.1:5000/filteronlocation)
 **Purpose:** This API displays the buckets in any particular region
-
+**Location passed as parameter in the url ** - http://127.0.0.1:5000/filteronlocationparam?location=us-west-2
 Following is the sample output:
 ```
 {
-  "Bucket": "botflaskproj"
+  "data": {
+    "Bucket": "inputloc"
+  }, 
+  "message": "200"
 }
 ```
-
-
 
 # Few APIs that would perform basic functions
 
