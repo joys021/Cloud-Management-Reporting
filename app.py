@@ -10,7 +10,24 @@ import logging
 from botocore.exceptions import ClientError
 import os
 from botocore.exceptions import ClientError
+from flask import Flask
+from flask_restless import APIManager
+from flask_cors import CORS
+logging.basicConfig(level=logging.INFO)
+from flask_cors import CORS, cross_origin
+#def add_cors_headers(response):
+#    response.headers['Access-Control-Allow-Origin'] = 'http://127.0.0.1:5000'
+#    response.headers['Access-Control-Allow-Credentials'] = 'true'
+#    response.headers['Access-Control-Allow-Methods'] = 'GET', 'POST', 'OPTIONS'
+#    response.headers['Access-Control-Allow-Methods'] = 'Origin', 'Content-Type', 'Accept'
+#    # Set whatever other headers you like...
+#    return response
 
+#app = Flask(__name__)
+#manager = APIManager(app)
+#blueprint = manager.create_api_blueprint('all', all)
+#blueprint.(add_cors_headers)after_request
+#app.register_blueprint(blueprint)
 
 
 s3 = boto3.client('s3', aws_access_key_id=S3_KEY,
@@ -20,25 +37,33 @@ app = Flask(__name__)
 ma = Marshmallow(app)
 app.config.from_object(__name__)
 
-
-    
+CORS(app)
+CORS(app, methods='POST')  
 class UserSchema(ma.Schema):
     class Meta:
         fields = ("bucket_name", "key", "last_modified","size")
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
-
+CORS(app, resources={r"/*": {"origins": "*","methods" : ['GET','POST','OPTIONS'] }})    
 Bootstrap(app)
 
-@app.route('/')
 
+
+
+@app.route('/', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def index():
     return render_template('index.html') 
 
 
 #display the details of the files in a bucket
-@app.route('/files', methods=['GET'])
+
+
+@app.route('/files', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def files():
     bucket_name_m=request.args.get('bucket')
     s3_resource = boto3.resource('s3')
@@ -68,7 +93,11 @@ sses_schema = SSeSchema(many=True)
 
 
 #display the details of a file in a particular bucket including encryption details
-@app.route('/objectdetails')
+
+
+@app.route('/objectdetails', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def objectdetails():
     s3 = boto3.resource('s3')
     err = {}
@@ -92,7 +121,10 @@ buc_schema = BucSchema()
 bucc_schema = BucSchema(many=True)
 
 #display the list of buckets 
-@app.route('/buckets')  
+
+@app.route('/buckets', methods = ['GET', 'POST'])  
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def buckets():
     client = boto3.client('s3')
     err = {}
@@ -109,8 +141,11 @@ def buckets():
         return jsonify(err)
     
     
-#create new bucket    
-@app.route('/createbucket')
+#create new bucket
+   
+@app.route('/createbucket', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type']) 
 def createbucket():
     s3 = boto3.resource('s3')
     err = {}
@@ -129,8 +164,11 @@ def createbucket():
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
 
-#encrypt single bucket       
-@app.route('/encryptsinglebucket')
+#encrypt single bucket  
+     
+@app.route('/encryptsinglebucket', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type']) 
 def encryptsinglebucket():
     cl = boto3.client('s3')
     err = {}
@@ -151,7 +189,10 @@ def encryptsinglebucket():
 
 
 #encrypt all the buckets in an account
-@app.route('/encryptallbuckets')
+
+@app.route('/encryptallbuckets', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type']) 
 def encryptallbuckets():
     s3_resource = boto3.resource('s3')
     cl = boto3.client('s3')
@@ -180,10 +221,12 @@ class ObjSchema(ma.Schema):
 obj_schema = ObjSchema()
 objj_schema = ObjSchema(many=True)
 
-
-        
+cors = CORS(app, resources={r"/*": {"origins": "*","methods" : ['GET','POST','OPTIONS'] }})    
+    
 #display all the buckets and the files in it.
-@app.route('/all')
+@app.route('/all', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def all():
     client = boto3.client('s3')
     s3_resource = boto3.resource('s3')
@@ -203,9 +246,13 @@ def all():
                 d.setdefault("Filenames", []).append(file.key)
             allobjects.append(d)
         d1={}
+        #d2={}
         d1.update({'message':"200"})
-        d1.update({'data':allobjects})
-        return jsonify(d1)
+        d1.update({'data':  allobjects})
+        ll = []
+        ll.append(d1)
+        #ll.append(d2)
+        return jsonify(ll)
     except ClientError as e:
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
@@ -214,7 +261,10 @@ def all():
         
         
 #display the list of buckets
-@app.route('/allbuckets')
+ 
+@app.route('/allbuckets', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type']) 
 def allbucs():
     s3 = boto3.client('s3')
     err = {}
@@ -227,19 +277,26 @@ def allbucs():
         d1={}
         d1.update({'message':"200"})
         d1.update({'data':d})
-        return jsonify(d1)
+        ll = []
+        ll.append(d1)
+        return jsonify(ll)
     except ClientError as e:
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
 
 #display the bucket details when name of the bucket is given
 
-@app.route('/listfilesinabucket')
+@app.route('/listfilesinabucket', methods = ['POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def my_form():
     return render_template('form.html')
 
 #input the bucket name and display the list of files in it
-@app.route('/listfilesinabucket', methods=['POST'])
+
+@app.route('/listfilesinabucket', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def my_form_post():
     text = request.form['text']
     s3_resource = boto3.resource('s3')
@@ -249,7 +306,10 @@ def my_form_post():
     return jsonify(result.data)
 
 
-@app.route('/listfilesparam', methods=['GET'])
+
+@app.route('/listfilesparam', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def listfilesparam():
     bucket_name=request.args.get('bucket')
     s3_resource = boto3.resource('s3')
@@ -271,12 +331,16 @@ def listfilesparam():
 
 #display the buckets in a particular region
 
-@app.route('/filteronlocation')
+@app.route('/filteronlocation', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def my_for():
     return render_template('for.html')
 
 
-@app.route('/filteronlocation', methods=['POST'])
+@app.route('/filteronlocation', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def my():
     l = request.form['loc']
     s3 = boto3.client("s3")
@@ -289,7 +353,9 @@ def my():
 
 #filter on location , location is passed as parameter
 
-@app.route('/filteronlocationparam', methods=['GET'])
+@app.route('/filteronlocationparam', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def mylocparam():
     location=request.args.get('location')
     s3 = boto3.client("s3")
@@ -303,7 +369,9 @@ def mylocparam():
         d1={}
         d1.update({'message':"200"})
         d1.update({'data':d})
-        return jsonify(d1)
+        ll = []
+        ll.append(d1)
+        return jsonify(ll)
     except ClientError as e:
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
@@ -311,13 +379,16 @@ def mylocparam():
 
 #create new bucket based on user's choice of location   
 
-@app.route('/inputbucketname')
+@app.route('/inputbucketname', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def inputbucket():
     return render_template('create.html')
 
 
-@app.route('/inputbucketname', methods=['POST'])
-
+@app.route('/inputbucketname', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def createbucketinput():
     name = request.form['name']
     location = request.form['loc']
@@ -330,13 +401,18 @@ def createbucketinput():
     return render_template('index.html')
 
 #create new bucket with the inputs given by the user
-@app.route('/copyinputbucketname')
+
+@app.route('/copyinputbucketname', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def copyinputbucket():
     return render_template('create.html')
 
 
-@app.route('/copyinputbucketname', methods=['POST'])
 
+@app.route('/copyinputbucketname', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def copycreatebucketinput():
     name = request.form['name']
     location = request.form['loc']
@@ -354,7 +430,10 @@ def copycreatebucketinput():
 
 #create new bucket with the values passed as parameters
 #http://127.0.0.1:5000/createbucketparam?bucket=iinnppuutloc&location=us-west-1
-@app.route('/createbucketparam', methods=['GET'])
+
+@app.route('/createbucketparam', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def createbucketparam():
     bucket_name=request.args.get('bucket')
     location=request.args.get('location')
@@ -374,8 +453,36 @@ def createbucketparam():
     except ClientError as e:
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
+
+
+
+#get_bucket_policy_status
+
         
-       
+#display the list of buckets
+ 
+@app.route('/publicstatus', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type']) 
+def pubstatus():
+    #location=request.args.get('location')
+    s3 = boto3.client("s3")
+    err = {}
+    err.update({'message':"400"})
+    try:
+        d = {}
+        #for bucket in s3.list_buckets()["Buckets"]:
+        resp = s3.get_public_access_block(Bucket='bucketsummer')
+        d.update({'PublicStatus': resp.data})
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':d})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+
 
 if __name__ == '__main__':
     app.run()
