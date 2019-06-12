@@ -252,7 +252,7 @@ def all():
         ll = []
         ll.append(d1)
         #ll.append(d2)
-        return jsonify(ll)
+        return jsonify(allobjects)
     except ClientError as e:
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
@@ -363,9 +363,17 @@ def mylocparam():
     err = {}
     err.update({'message':"400"})
     try:
+        d={}
         for bucket in s3.list_buckets()["Buckets"]:
             if s3.get_bucket_location(Bucket=bucket['Name'])['LocationConstraint'] == location:
-                d.update( {'Bucket' : bucket["Name"]} )          
+                #d.update( {'Bucket' : bucket["Name"]} ) 
+                d.setdefault("Buckets", []).append(bucket['Name'])
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':d})
+        ll = []
+        ll.append(d1)
+        return jsonify(ll)
         d1={}
         d1.update({'message':"200"})
         d1.update({'data':d})
@@ -461,28 +469,71 @@ def createbucketparam():
         
 #display the list of buckets
  
-@app.route('/publicstatus', methods = ['GET', 'POST'])
+#@app.route('/publicstatus', methods = ['GET', 'POST'])
+#@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+#@cross_origin(headers=['Content-Type']) 
+#def pubstatus():
+#    #location=request.args.get('location')
+#    s3 = boto3.client("s3")
+#    err = {}
+#    err.update({'message':"400"})
+#    try:
+#        d = {}
+#        #for bucket in s3.list_buckets()["Buckets"]:
+#       resp = s3.get_public_access_block(Bucket='bucketsummer')
+#        d.update({'PublicStatus': resp.data})
+#        d1={}
+#        d1.update({'message':"200"})
+#        d1.update({'data':d})
+#        return jsonify(d1)
+#        err.update({'Error':e.response['Error']['Code']})
+#        return jsonify(err)
+
+
+@app.route('/regionsofbuckets', methods = ['GET', 'POST'])
 @cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
-@cross_origin(headers=['Content-Type']) 
-def pubstatus():
+@cross_origin(headers=['Content-Type'])
+def myregion():
     #location=request.args.get('location')
     s3 = boto3.client("s3")
+    client = boto3.client('s3')
     err = {}
+    #allobjects = {}
     err.update({'message':"400"})
     try:
-        d = {}
-        #for bucket in s3.list_buckets()["Buckets"]:
-        resp = s3.get_public_access_block(Bucket='bucketsummer')
-        d.update({'PublicStatus': resp.data})
+        d={}
+        response = client.list_buckets()
+        bucketnames = [bucket['Name'] for bucket in response['Buckets']]
+        regionnames = []
+        allobjects = []
+        for bucket in bucketnames:
+            regionnames.append((s3.get_bucket_location(Bucket = bucket))['LocationConstraint'])
+        regionnames = list(set(regionnames))    
+        for x in range(len(regionnames)):
+            b = regionnames[x]
+            d={}
+            d.update( {'region' : b} )
+            
+            #my_bucket = s3_resource.Bucket(b)
+            for bucket in bucketnames:
+                if s3.get_bucket_location(Bucket=bucket)['LocationConstraint'] == b:
+                    d.setdefault("ttt", []).append(bucket)
+            leng = len(d['ttt'])
+            d.update( {'buckets' : leng} )
+            del d["ttt"]
+            allobjects.append(d)
+            #d.setdefault("Buckets", []).append(bucket['Name'])
         d1={}
         d1.update({'message':"200"})
-        d1.update({'data':d})
-        return jsonify(d1)
+        d1.update({'data':allobjects})
+        ll = []
+        ll.append(d1)
+        return jsonify(allobjects)
     except ClientError as e:
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
 
-
+  
 
 if __name__ == '__main__':
     app.run()
