@@ -1,0 +1,9 @@
+[{
+    "type" : "encrypted",
+    "buckets" : "20"
+},
+{
+ "type" : "unencrypted",
+ "buckets" : "15"
+}
+]
