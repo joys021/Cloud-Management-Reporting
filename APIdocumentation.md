@@ -242,6 +242,12 @@ Following is the sample output
   }
 ]
 ```
+
+
+### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/Dashboard.html)
+
+
+
 # Few APIs that would perform basic functions
 
 ### * API URL: http://127.0.0.1:5000/files?bucket=flasksummerproj 
