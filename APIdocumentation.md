@@ -180,6 +180,7 @@ Following is the sample output:
 
 ### 10. API URL : [Count of files in all buckets](http://127.0.0.1:5000/allcount)
 **Purpose:** This API displays the number of files stored in each bucket of an account
+Following is the sample output:
 ```[
   {
     "buckets": 2, 
@@ -216,6 +217,28 @@ Following is the sample output:
   {
     "buckets": 1, 
     "bucketname": "twosecondtwo"
+  }
+]
+```
+### 11. API URL : [Count of buckets in each region](http://127.0.0.1:5000/regionsofbuckets)
+**Purpose:** This API displays the number of buckets stored in each region
+Following is the sample output
+```[
+  {
+    "buckets": 1, 
+    "region": "eu-west-1"
+  }, 
+  {
+    "buckets": 3, 
+    "region": "ap-northeast-2"
+  }, 
+  {
+    "buckets": 2, 
+    "region": "sa-east-1"
+  }, 
+  {
+    "buckets": 3, 
+    "region": "us-west-2"
   }
 ]
 ```
