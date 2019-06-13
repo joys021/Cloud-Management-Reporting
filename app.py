@@ -533,7 +533,50 @@ def myregion():
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
 
-  
+
+
+    
+#display all the buckets and the files in it.
+@app.route('/allcount', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def allcount():
+    client = boto3.client('s3')
+    s3_resource = boto3.resource('s3')
+    err = {}
+    err.update({'message':"400"})
+    try:
+        response = client.list_buckets()
+        allobjects = []
+        d = {}
+        #dict = {}
+        bucketnames = [bucket['Name'] for bucket in response['Buckets']]
+        for x in range(len(bucketnames)):
+            b = bucketnames[x]
+            d={}
+            d.update( {'type' : b} )
+            my_bucket = s3_resource.Bucket(b)
+            mybucs = [file.key for file in my_bucket.objects.all()]
+            lengh = len(mybucs)
+            #for file in mybucs:
+            #    d.setdefault("Filenames", []).append(file)
+            d.update( {'buckets' : lengh} )
+            allobjects.append(d)
+        d1={}
+        #d2={}
+        d1.update({'message':"200"})
+        d1.update({'data':  allobjects})
+        ll = []
+        ll.append(d1)
+        #ll.append(d2)
+        return jsonify(allobjects)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+        
+        
+
+
 
 if __name__ == '__main__':
     app.run()
