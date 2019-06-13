@@ -178,6 +178,47 @@ Following is the sample output:
 }
 ```
 
+### 10. API URL : [Count of files in all buckets](http://127.0.0.1:5000/allcount)
+**Purpose:** This API displays the number of files stored in each bucket of an account
+```[
+  {
+    "buckets": 2, 
+    "bucketname": "eighteighthe"
+  }, 
+  {
+    "buckets": 3, 
+    "bucketname": "fivefifth"
+  }, 
+  {
+    "buckets": 1, 
+    "bucketname": "fourfourth"
+  }, 
+  {
+    "buckets": 1, 
+    "bucketname": "nineninth"
+  }, 
+  {
+    "buckets": 0, 
+    "bucketname": "onefirstone"
+  }, 
+  {
+    "buckets": 2, 
+    "bucketname": "sevenseventh"
+  }, 
+  {
+    "buckets": 4, 
+    "bucketname": "sixsixth"
+  }, 
+  {
+    "buckets": 5, 
+    "bucketname": "tenthone"
+  }, 
+  {
+    "buckets": 1, 
+    "bucketname": "twosecondtwo"
+  }
+]
+```
 # Few APIs that would perform basic functions
 
 ### * API URL: http://127.0.0.1:5000/files?bucket=flasksummerproj 
