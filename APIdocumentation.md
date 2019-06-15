@@ -246,13 +246,20 @@ Following is the sample output
 **Purpose:** This API does the following steps
 
 get filename
+
 calculate the recency in minutes
+
 if less than 60 minutes:
-   send the file from cache
+
+send the file from cache
+
 else:
-   call the original API
-   save data to file
-   return the new file
+
+call the original API
+
+save data to file
+
+return the new file
 
 
 ### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/Dashboard.html)
