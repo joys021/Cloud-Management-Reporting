@@ -567,11 +567,11 @@ def getfilefunc():
     err.update({'message':"400"})
     try:
         onehour = 60
-        filestat = os.stat(file_name)
+        filestat = os.stat('venv/cache/'+file_name)
         date_format = "%Y-%m-%d %H:%M:%S"
         d2 = "%Y-%m-%d %H:%M:%S.%f"
         date = time.localtime((filestat.st_mtime))
-        modTimesinceEpoc = os.path.getmtime(file_name)
+        modTimesinceEpoc = os.path.getmtime('venv/cache/'+file_name)
         presenttime = str(datetime.now())
         modificationTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(modTimesinceEpoc))
         time1  = datetime.strptime(modificationTime, date_format)
@@ -581,7 +581,8 @@ def getfilefunc():
         if onehour > diffinminutes:
             return send_file('cache/'+file_name, attachment_filename=file_name)
         else:
-            items = requests.get('http://127.0.0.1:5000/'+file_name)
+            api = file_name[-len(file_name):-5]
+            items = requests.get('http://127.0.0.1:5000/'+api)
             data = items.json()
             with open(file_name, 'w') as f:
                 json.dump(data, f)
@@ -608,7 +609,10 @@ def saveallfiles():
     err = {}
     err.update({'message':"400"})
     try:
-        items = requests.get('http://127.0.0.1:5000/allbuckets') # (your url)
+        file_name = 'allbuckets.json'
+        api = file_name[-len(file_name):-5]
+        url = ('http://127.0.0.1:5000/'+api)
+        items = requests.get(url) # (your url)
         data = items.json()
         with open('venv/cache/allbuckets.json', 'w') as f:
             json.dump(data, f)
@@ -617,7 +621,7 @@ def saveallfiles():
         with open('venv/cache/allcount.json', 'w') as f:
             json.dump(data, f)
         d1={}
-        d1.update({'message':"200"})
+        d1.update({'message':url})
         d1.update({'data':"Saved file Successfully"})
         ll = []
         ll.append(d1)
