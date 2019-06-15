@@ -242,6 +242,17 @@ Following is the sample output
   }
 ]
 ```
+### 12. API URL : [Get Files from Cache](http://127.0.0.1:5000/getfile?filename=allcount.json)
+**Purpose:** This API does the following steps
+
+get filename
+calculate the recency in minutes
+if less than 60 minutes:
+   send the file from cache
+else:
+   call the original API
+   save data to file
+   return the new file
 
 
 ### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/Dashboard.html)
