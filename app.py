@@ -589,7 +589,7 @@ def getfilefunc():
         d1.update({'message':"200"})
         d1.update({'last modified time':modificationTime})
         d1.update({'present time':presenttime})
-        d1.update({'diff in minutes':str(minutes)})
+        d1.update({'diff in minutes':str(diffinminutes)})
         ll = []
         ll.append(d1)
         return send_file(file_name, attachment_filename=file_name)
@@ -614,7 +614,7 @@ def saveallfiles():
             json.dump(data, f)
         item2 = requests.get('http://127.0.0.1:5000/allcount') # (your url)
         data = item2.json()
-        with open('venv/cache/objectcounts.json', 'w') as f:
+        with open('venv/cache/allcount.json', 'w') as f:
             json.dump(data, f)
         d1={}
         d1.update({'message':"200"})
