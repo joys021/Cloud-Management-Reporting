@@ -570,7 +570,7 @@ def getfilefunc():
         filestat = os.stat('venv/cache/'+file_name)
         date_format = "%Y-%m-%d %H:%M:%S"
         d2 = "%Y-%m-%d %H:%M:%S.%f"
-        date = time.localtime((filestat.st_mtime))
+        #date = time.localtime((filestat.st_mtime))
         modTimesinceEpoc = os.path.getmtime('venv/cache/'+file_name)
         presenttime = str(datetime.now())
         modificationTime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(modTimesinceEpoc))
@@ -580,26 +580,27 @@ def getfilefunc():
         diffinminutes = (diff.seconds) / 60
         if onehour > diffinminutes:
             return send_file('cache/'+file_name, attachment_filename=file_name)
+            #return send_file(file_name, attachment_filename=file_name)
         else:
             api = file_name[-len(file_name):-5]
             items = requests.get('http://127.0.0.1:5000/'+api)
             data = items.json()
-            with open(file_name, 'w') as f:
+            with open('cache/'+file_name, 'w') as f:
                 json.dump(data, f)
-        d1 = {}
+        d1 = {} 
         d1.update({'message':"200"})
         d1.update({'last modified time':modificationTime})
         d1.update({'present time':presenttime})
         d1.update({'diff in minutes':str(diffinminutes)})
         ll = []
         ll.append(d1)
-        return send_file(file_name, attachment_filename=file_name)
+        return send_file('venv/cache/'+file_name, attachment_filename=file_name)
     except ClientError as e:
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
 
 
-
+#this will save the files for the first time in the cache
 @app.route('/savefiles', methods = ['GET', 'POST'])
 @cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
 @cross_origin(headers=['Content-Type'])
