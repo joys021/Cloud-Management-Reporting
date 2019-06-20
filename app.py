@@ -585,7 +585,7 @@ def getfilefunc():
             api = file_name[-len(file_name):-5]
             items = requests.get('http://127.0.0.1:5000/'+api)
             data = items.json()
-            with open('cache/'+file_name, 'w') as f:
+            with open('venv/cache/'+file_name, 'w') as f:
                 json.dump(data, f)
         d1 = {} 
         d1.update({'message':"200"})
@@ -594,7 +594,7 @@ def getfilefunc():
         d1.update({'diff in minutes':str(diffinminutes)})
         ll = []
         ll.append(d1)
-        return send_file('venv/cache/'+file_name, attachment_filename=file_name)
+        return send_file('cache/'+file_name, attachment_filename=file_name)
     except ClientError as e:
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
