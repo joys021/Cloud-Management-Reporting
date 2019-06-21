@@ -17,6 +17,8 @@ logging.basicConfig(level=logging.INFO)
 from flask_cors import CORS, cross_origin
 import os, time
 import datetime
+import os.path
+from os import path
 from datetime import timedelta
 from datetime import datetime
 from time import gmtime, strftime
@@ -567,6 +569,13 @@ def getfilefunc():
     err.update({'message':"400"})
     try:
         onehour = 60
+        filepath = 'venv/cache/'+file_name
+        if ((path.exists(filepath)) == False):
+            api = file_name[-len(file_name):-5]
+            items = requests.get('http://127.0.0.1:5000/'+api)
+            data = items.json()
+            with open('venv/cache/'+file_name, 'w') as f:
+                json.dump(data, f)                        
         filestat = os.stat('venv/cache/'+file_name)
         date_format = "%Y-%m-%d %H:%M:%S"
         d2 = "%Y-%m-%d %H:%M:%S.%f"
