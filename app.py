@@ -180,10 +180,11 @@ def createbucket():
 def encryptsinglebucket():
     cl = boto3.client('s3')
     err = {}
+    bucket_name=request.args.get('bucket')
     err.update({'message':"400"})
     try:
         respo = cl.put_bucket_encryption(
-           Bucket='botflaskproj',
+           Bucket=bucket_name,
            ServerSideEncryptionConfiguration={
             'Rules': [{'ApplyServerSideEncryptionByDefault': {
                 'SSEAlgorithm': 'AES256',}},]})
@@ -609,6 +610,8 @@ def getfilefunc():
         return jsonify(err)
 
 
+
+
 #this will save the files for the first time in the cache
 @app.route('/savefiles', methods = ['GET', 'POST'])
 @cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
@@ -641,6 +644,43 @@ def saveallfiles():
         return jsonify(err)
 
 
+
+@app.route('/bucketencryptiondetails', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def bucketencryptiondetails():
+    #location=request.args.get('location')
+    s3 = boto3.client("s3")
+    client = boto3.client('s3')
+    err = {}
+    #allobjects = {}
+    err.update({'message':"400"})
+    try:
+        d={}
+        response = client.list_buckets()
+        bucketnames = [bucket['Name'] for bucket in response['Buckets']]
+        encbuckets = []
+        unencbuckets = []
+        for bucket in bucketnames:
+            try:
+                if((s3.get_bucket_encryption(Bucket = bucket)['ServerSideEncryptionConfiguration']['Rules'][0]['ApplyServerSideEncryptionByDefault']['SSEAlgorithm'])=='AES256'):
+                    encbuckets.append(bucket)
+            except ClientError as e:
+                unencbuckets.append(bucket)
+            #raise ClientError("Can't calculate log")
+        encleng = len(encbuckets)
+        unencleng = len(unencbuckets)
+        d1={}
+        d2 = {}
+        d1.update({'type':"encrypted", "count":encleng})
+        d2.update({'type':"unencrypted", "count":unencleng})
+        ll = []
+        ll.append(d1)
+        ll.append(d2)        
+        return jsonify(ll)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
 
 
 
