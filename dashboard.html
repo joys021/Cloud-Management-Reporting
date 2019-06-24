@@ -1,46 +1,78 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
 
-<head>
-	<style>
+    <head>
+       
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+            <style>
 
-  .bar{
-    fill: steelblue;
-  }
+                    .bar{
+                      fill: steelblue;
+                    }
+                  
+                    .bar:hover{
+                      fill: brown;
+                    }
+                  
+                      .axis {
+                        font: 10px sans-serif;
+                      }
+                  
+                      .axis path,
+                      .axis line {
+                        fill: none;
+                        stroke: #000;
+                        shape-rendering: crispEdges;
+                      }
+                      .arc text {
+                            font: 10px Arial, Georgia, sans-serif;
+                            text-anchor: middle;
+                      }
+                      .arc path {
+                            stroke: #ffffff;
+                          }
+                          .axis {
+                            font: 10px sans-serif;
+                            }
 
-  .bar:hover{
-    fill: brown;
-  }
-
-	.axis {
-	  font: 10px sans-serif;
-	}
-
-	.axis path,
-	.axis line {
-	  fill: none;
-	  stroke: #000;
-	  shape-rendering: crispEdges;
-	}
-
-	</style>
-</head>
-
-<body>
-	
-<script src="http://d3js.org/d3.v3.min.js"></script>
-
-<script>
-// set the dimensions of the canvas
-var margin = {top: 20, right: 20, bottom: 70, left: 40},
-    width = 600 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+                            .axis path,
+                          	.axis line {
+                            fill: none;
+                            stroke: #000;
+                            shape-rendering: crispEdges;
+                          }
+                      
+                      </style>
+        <meta charset="utf-8">
+        <title>Dashboard</title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <!-- Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="style.css">
+        
+        <!-- Load D3 -->
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>  
+      
+    </head>
+    <body>
+        <div id='layout'>
+            <!-- <h2>Bar chart example</h2> -->
+            <div id='container'>
+              
+            </div>
+          </div>
+      <div class="donutChart"></div>
+            <script type="text/javascript" src="pie.js"></script>
+        <script>
+var margin = {top1: 50, right1: 22, bottom1: 110, left1: 40},
+    width1 = 500 - margin.left1 - margin.right1,
+    height1 = 250 - margin.top1 - margin.bottom1;
 
 
 // set the ranges
-var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+var x = d3.scale.ordinal().rangeRoundBands([0, width1], .05);
 
-var y = d3.scale.linear().range([height, 0]);
+var y = d3.scale.linear().range([height1, 0]);
 
 // define the axis
 var xAxis = d3.svg.axis()
@@ -56,21 +88,31 @@ var yAxis = d3.svg.axis()
 
 // add the SVG element
 var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width1 + margin.left1 + margin.right1)
+    .attr("height", height1 + margin.top1 + margin.bottom1)
   .append("g")
     .attr("transform", 
-          "translate(" + margin.left + "," + margin.top + ")");
+          "translate(" + margin.left1 + "," + margin.top1 + ")");
 
-
+/*
 // load the data
-d3.json("trial.json", function(error, data) {
+d3.json("http://127.0.0.1:5000/regionsofbuckets", function(error, data) {
 
     data.forEach(function(d) {
         d.region = d.region;
         d.buckets = +d.buckets;
     });
-	
+*/
+
+// load the data file trial
+d3.json("http://127.0.0.1:5000/getfile?filename=regionsofbuckets.json", function(error, data) {
+
+data.forEach(function(d) {
+    d.region = d.region;
+    d.buckets = +d.buckets;
+});
+
+
   // scale the range of the data
   x.domain(data.map(function(d) { return d.region; }));
   y.domain([0, d3.max(data, function(d) { return d.buckets; })]);
@@ -78,8 +120,9 @@ d3.json("trial.json", function(error, data) {
   // add axis
   svg.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
+      .attr("transform", "translate(0," + height1 + ")")
+      .call(d3.axisBottom(x))
+      //.call(xAxis)
     .selectAll("text")
       .style("text-anchor", "end")
       .attr("dx", "-.8em")
@@ -88,7 +131,8 @@ d3.json("trial.json", function(error, data) {
 
   svg.append("g")
       .attr("class", "y axis")
-      .call(yAxis)
+      //.call(yAxis)
+      .call(d3.axisLeft(y))
     .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 5)
@@ -105,10 +149,23 @@ d3.json("trial.json", function(error, data) {
       .attr("x", function(d) { return x(d.region); })
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.buckets); })
-      .attr("height", function(d) { return height - y(d.buckets); });
+      .attr("height", function(d) { return height1 - y(d.buckets); });
+
+      svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top ))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text("Number of buckets in each region");
 
 });
 
-</script>
+        </script>
+       <script type="text/javascript" src="donut.js"></script>
+       <script type="text/javascript" src="barbucketsize.js"></script>
+       
 
-</body>
+<!-- CSS Style //-->
+
+</head>
