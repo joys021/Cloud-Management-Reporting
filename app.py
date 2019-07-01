@@ -23,6 +23,8 @@ from datetime import timedelta
 from datetime import datetime
 from time import gmtime, strftime
 from flask import send_file
+from flask import Flask, render_template
+import logging
 #def add_cors_headers(response):
 #    response.headers['Access-Control-Allow-Origin'] = 'http://127.0.0.1:5000'
 #    response.headers['Access-Control-Allow-Credentials'] = 'true'
@@ -504,7 +506,7 @@ def myregion():
                     d.setdefault("ttt", []).append(bucket)
             leng = len(d['ttt'])
             d.update( {'buckets' : leng} )
-            del d["ttt"]
+            del d["ttt"],
             allobjects.append(d)
             #d.setdefault("Buckets", []).append(bucket['Name'])
         d1={}
@@ -516,7 +518,6 @@ def myregion():
     except ClientError as e:
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
-
 
 
     
@@ -576,7 +577,7 @@ def getfilefunc():
             items = requests.get('http://127.0.0.1:5000/'+api)
             data = items.json()
             with open('venv/cache/'+file_name, 'w') as f:
-                json.dump(data, f)                        
+                json.dump(data, f) 
         filestat = os.stat('venv/cache/'+file_name)
         date_format = "%Y-%m-%d %H:%M:%S"
         d2 = "%Y-%m-%d %H:%M:%S.%f"
@@ -644,7 +645,7 @@ def saveallfiles():
         return jsonify(err)
 
 
-
+#get the number of encrypted and unencrypted buckets
 @app.route('/bucketencryptiondetails', methods = ['GET', 'POST'])
 @cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
 @cross_origin(headers=['Content-Type'])
@@ -683,8 +684,165 @@ def bucketencryptiondetails():
         return jsonify(err)
 
 
+#get the size of the buckets in bytes
+@app.route('/bucketsize', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def bucketsize():
+    #location=request.args.get('location')
+    s3 = boto3.client("s3")
+    client = boto3.client('s3')
+    err = {}
+    bucketsizes = []
+    total_size = 0
+    allobjects = []
+    err.update({'message':"400"})
+    try:
+        response = client.list_buckets()
+        bucketnames = [bucket['Name'] for bucket in response['Buckets']]
+        for mybucket in bucketnames:
+            bucket = boto3.resource('s3').Bucket(mybucket)
+            for file in bucket.objects.all():
+                total_size += file.size
+            bucketsizes.append(total_size)
+        for x in range(len(bucketsizes)):
+            b = bucketsizes[x]
+            ss = b/1024
+            d={}
+            d.update( {'bucket' : bucketnames[x]} )
+            d.update( {'size' : ss} )  
+            allobjects.append(d)
+        return jsonify(allobjects)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+@app.route('/filesfrompath')
+def content():
+    text = open('venv/cache/geo.json', 'r+')
+    content = text.read()
+    text.close()
+    return(content)
 
 
+
+
+@app.route('/getgeo', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def contentss():
+    client = boto3.client('s3')
+    err = {}
+    #allobjects = {}
+    err.update({'message':"400"})
+    try:
+        d={}
+        regionnames = []
+        response = client.list_buckets()
+        bucketnames = [bucket['Name'] for bucket in response['Buckets']]
+        for bucket in bucketnames:
+            regionnames.append((client.get_bucket_location(Bucket = bucket))['LocationConstraint'])
+        regionnames = list(set(regionnames))
+        allobjects =[]
+        item2 = requests.get('http://127.0.0.1:5000/filesfrompath') # (your url)
+        data = item2.json()
+        with open('venv/cache/geo2.json', 'w') as f:
+            json.dump(data, f)
+        for x in range(len(regionnames)):
+            b = regionnames[x]
+            for item in data:
+                if item['region'] == b:
+                    lat = item['lat']
+                    lon = item['lon']
+                    regionname = item['regionname']
+                    d={}
+                    d.update( {'lat' : lat} )
+                    d.update( {'lon' : lon} )
+                    d.update( {'regionname' : regionname} )
+                    break
+            allobjects.append(d)
+        return jsonify(allobjects)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']})
+        return jsonify(err)
+        
+        
+@app.route('/regionsofinstances', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def instanceregion():
+    #location=request.args.get('location')
+    ec2 = boto3.client('ec2', region_name='us-east-1')
+    err = {}
+    #RunningInstances = []
+    allobjects = []
+    err.update({'message':"400"})
+    try:
+        val = []
+        d = {}
+        response = ec2.describe_regions()
+        jj = list(response['Regions'])
+        for i in jj:
+            val.append(i.get('RegionName'))
+        #kk = list(set(val))
+        for x in range(len(val)):
+            b = val[x]
+            d = {}
+            d.update( {'region' : b} )
+            d.update( {'countofreg' : val} )
+            #d.update( {'length of the list' : len(jj)} )
+            #del d["ttt"]
+            allobjects.append(d)
+        return jsonify(allobjects)
+        #return jsonify(len(jj))
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+@app.route('/instances', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def instance():
+    #location=request.args.get('location')
+    client = boto3.client('ec2', region_name='us-west-1')
+    err = {}
+    RunningInstances = []
+    regionnames =[]
+    #allobjects = {}
+    err.update({'message':"400"})
+    try:
+        d ={}
+        allobjects = []
+        val = []
+        #leng = []
+        #client = boto3.client('ec2')
+        response = client.describe_regions()
+        jj = list(response['Regions'])
+        for i in jj:
+            val.append(i.get('RegionName'))
+        #regionnames = list(regions)
+        for x in range(len(val)):
+            b = val[x]
+            d = {}
+            d.update( {'region' : b} )
+            ec2 = boto3.resource('ec2',region_name=b)
+            running_instances = ec2.instances.all()
+            
+            if (len(list(set(running_instances)))>0):
+                for instance in running_instances:
+                    d.setdefault("ttt", []).append(instance.id)
+                    leng = len(d["ttt"])
+                    d.update( {'instancescount' : leng} )
+                    del d["ttt"]
+            else:
+                d.update({'instancescount' : 0})
+            allobjects.append(d)
+        return jsonify(allobjects)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+    
 if __name__ == '__main__':
     app.run()
 
