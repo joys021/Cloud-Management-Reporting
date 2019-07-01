@@ -842,6 +842,59 @@ def instance():
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
 
+
+@app.route('/instancestate', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def instancestate():
+    #location=request.args.get('location')
+    client = boto3.client('ec2', region_name='us-west-1')
+    err = {}
+    #RunningInstances = []
+    regionnames =[]
+    #allobjects = {}
+    err.update({'message':"400"})
+    try:
+        val = []
+        allstate = []
+        response = client.describe_regions()
+        jj = list(response['Regions'])
+        for i in jj:
+            val.append(i.get('RegionName'))
+        #regionnames = list(regions)
+        for x in range(len(val)):
+            b = val[x]
+            d = {}
+            ec2 = boto3.resource('ec2',region_name=b)
+            running_instances = ec2.instances.all()
+            for instance in running_instances:
+                allstate.append(instance.state['Name'])
+        d1={}
+        d2 = {}
+        d3={}
+        d4 = {}
+        d5={}
+        d6 = {}
+        d1.update({'type':"pending", "count":allstate.count('pending')})
+        d2.update({'type':"running", "count":allstate.count('running')})
+        d3.update({'type':"stopping", "count":allstate.count('stopping')})
+        d4.update({'type':"stopped", "count":allstate.count('stopped')})
+        d5.update({'type':"shutting-down", "count":allstate.count('shutting-down')})
+        d6.update({'type':"terminated", "count":allstate.count('terminated')})
+        ll = []
+        ll.append(d1)
+        ll.append(d2)
+        ll.append(d3)
+        ll.append(d4) 
+        ll.append(d5)
+        ll.append(d6) 
+        return jsonify(ll)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+
+
     
 if __name__ == '__main__':
     app.run()
