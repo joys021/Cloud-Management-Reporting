@@ -269,9 +269,207 @@ Following is the sample output
 ]
 ```
 
-### 14. API URL : []() 
-### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/Dashboard.html)
 
+### 14. API URL : [Get count of objects in each bucket](http://127.0.0.1:5000/allcount)
+**Purpose:** This API gets the count of objects in each bucket\
+Following is the sample output
+```[
+  {
+    "bucket": "addbucketeu", 
+    "objectscount": 0
+  }, 
+  {
+    "bucket": "eighteighthe", 
+    "objectscount": 2
+  }, 
+  {
+    "bucket": "fivefifth", 
+    "objectscount": 3
+  }, 
+  {
+    "bucket": "fourfourth", 
+    "objectscount": 1
+  }, 
+  {
+    "bucket": "nineninth", 
+    "objectscount": 1
+  }, 
+  {
+    "bucket": "onefirstone", 
+    "objectscount": 0
+  }, 
+  {
+    "bucket": "sevenseventh", 
+    "objectscount": 2
+  }, 
+  {
+    "bucket": "sixsixth", 
+    "objectscount": 4
+  }, 
+  {
+    "bucket": "tenthone", 
+    "objectscount": 5
+  }, 
+  {
+    "bucket": "twosecondtwo", 
+    "objectscount": 1
+  }
+]
+```
+
+
+### 15. API URL : [Size of each bucket](http://127.0.0.1:5000/bucketsize)
+**Purpose:** This API gets the size of each bucket in KB
+Following is the sample output
+```[
+  {
+    "bucket": "addbucketeu", 
+    "size": 0.0
+  }, 
+  {
+    "bucket": "eighteighthe", 
+    "size": 19.6953125
+  }, 
+  {
+    "bucket": "fivefifth", 
+    "size": 19.783203125
+  }, 
+  {
+    "bucket": "fourfourth", 
+    "size": 265.015625
+  }, 
+  {
+    "bucket": "nineninth", 
+    "size": 265.015625
+  }, 
+  {
+    "bucket": "onefirstone", 
+    "size": 265.015625
+  }, 
+  {
+    "bucket": "sevenseventh", 
+    "size": 323.515625
+  }, 
+  {
+    "bucket": "sixsixth", 
+    "size": 382.015625
+  }, 
+  {
+    "bucket": "tenthone", 
+    "size": 705.53125
+  }, 
+  {
+    "bucket": "twosecondtwo", 
+    "size": 705.53125
+  }
+]
+```
+
+### 16. API URL : [Count of intances in different states](http://127.0.0.1:5000/instancestate)
+**Purpose:** This API gets the count of instances in differnt states from all regions of an account
+Following is the sample output
+```[
+  {
+    "count": 0, 
+    "type": "pending"
+  }, 
+  {
+    "count": 1, 
+    "type": "running"
+  }, 
+  {
+    "count": 0, 
+    "type": "stopping"
+  }, 
+  {
+    "count": 1, 
+    "type": "stopped"
+  }, 
+  {
+    "count": 0, 
+    "type": "shutting-down"
+  }, 
+  {
+    "count": 0, 
+    "type": "terminated"
+  }
+]
+```
+
+
+### 17. API URL : [intance count in each region](http://127.0.0.1:5000/instancestate)
+**Purpose:** This API gets count of instances present in each region of an account
+Following is the sample output
+```[
+  {
+    "instancescount": 0, 
+    "region": "eu-north-1"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "ap-south-1"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "eu-west-3"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "eu-west-2"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "eu-west-1"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "ap-northeast-2"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "ap-northeast-1"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "sa-east-1"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "ca-central-1"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "ap-southeast-1"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "ap-southeast-2"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "eu-central-1"
+  }, 
+  {
+    "instancescount": 1, 
+    "region": "us-east-1"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "us-east-2"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "us-west-1"
+  }, 
+  {
+    "instancescount": 0, 
+    "region": "us-west-2"
+  }
+]
+```
+
+
+### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/Dashboard.html)
 
 
 # Few APIs that would perform basic functions
