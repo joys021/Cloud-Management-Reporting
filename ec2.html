@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+            <style>
+
+                    .bar{
+                      fill: steelblue;
+                    }
+                  
+                    .bar:hover{
+                      fill: brown;
+                    }
+                  
+                      .axis {
+                        font: 10px sans-serif;
+                      }
+                  
+                      .axis path,
+                      .axis line {
+                        fill: none;
+                        stroke: #000;
+                        shape-rendering: crispEdges;
+                      }
+                      .arc text {
+                            font: 10px Arial, Georgia, sans-serif;
+                            text-anchor: middle;
+                      }
+                      .arc path {
+                            stroke: #ffffff;
+                          }
+                          .axis {
+                            font: 10px sans-serif;
+                            }
+
+                            .axis path,
+                          	.axis line {
+                            fill: none;
+                            stroke: #000;
+                            shape-rendering: crispEdges;
+                          }
+                         
+div.scrollmenu {
+  background-color: #333;
+  overflow: auto;
+  white-space: nowrap;
+}
+
+div.scrollmenu a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+}
+
+div.scrollmenu a:hover {
+  background-color: #777;
+}
+body {
+  background-color: rgb(236, 236, 221);
+}
+
+path:hover {
+	fill-opacity: .7;
+}
+
+/* Style for Custom Tooltip */
+div.tooltip {   
+ 	position: absolute;           
+	text-align: center;           
+	width: 60px;                  
+	height: 28px;                 
+	padding: 2px;             
+	font: 12px sans-serif;        
+	background: white;   
+	border: 0px;      
+	border-radius: 8px;           
+	pointer-events: none;         
+}
+        
+/* Legend Font Style */
+body {
+	font: 11px sans-serif;
+}
+        
+/* Legend Position Style */
+.legend {
+	position:absolute;
+	left:800px;
+	top:350px;
+}
+
+
+                      </style>
+        <meta charset="utf-8">
+        <title>Dashboard</title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <!-- Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="style.css">
+        
+        <!-- Load D3 -->
+    
+    
+        <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script> 
+      
+    
+    </head>
+    <body>
+        
+        <div id='layout'>
+            <!-- <h2>Bar chart example</h2> -->
+            <div id='container'>
+              
+            </div>
+          </div>
+
+          <div class="scrollmenu">
+              <a href="all.html">Home</a>
+            <a href="all.html">S3</a>
+            <a href="ec2.html">EC2</a>
+            <a href="#contact">ELB</a>
+            <a href="#about">Route Tables</a>
+            <a href="#support">Security Group</a>
+           
+          </div>
+          
+      <div class="donutChart"></div>
+         
+  <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script> 
+  <script type="text/javascript" src="ec2statesbar.js"></script>
+  <script type="text/javascript" src="ec2regionbar.js"></script>
+
+ 
+
+        </body>
+        </html>
