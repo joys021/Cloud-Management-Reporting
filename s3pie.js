@@ -98,7 +98,7 @@ d3.json("http://127.0.0.1:5000/getfile?filename=allcount.json", function(error, 
 
 
 
-// Helper function for animation of pie chart and donut chart
+// Helper function for animation of pie chart and donut chartt
 function tweenPie(b) {
   b.innerRadius = 0;
   var i = d3.interpolate({startAngle: 0, endAngle: 0}, b);
