@@ -5,7 +5,6 @@ var margin = {top: 20, right: 20, bottom: 20, left: 20},
     radius = width/2;
 
 // color range
-
       
 var color = d3.scaleOrdinal()
     .range(["#BBDEFB", "#90CAF9", "#64B5F6", "#42A5F5", "#2196F3", "#1E88E5", "#1976D2"]);
@@ -42,8 +41,19 @@ d3.json("http://127.0.0.1:5000/getfile?filename=bucketencryptiondetails.json", f
     data.forEach(function(d) {
         d.type = d.type;
         d.buckets = +d.count;
+
+     
+
+        var tots = d3.sum(data, function(d) { 
+          return d.count; 
+      });
+      data.forEach(function(d) {
+        d.percentage = (d.count  / tots * 100).toFixed(2);
     });
 
+    });
+
+    
 
    // "g element is a container used to group other SVG elements"
    var g4 = svg4.selectAll(".arc2")
@@ -67,15 +77,15 @@ g4.append("text")
    .duration(2000)
  .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
    .attr("dy", ".35em")
-   .text(function(d) { return d.data.type; });
+   .text(function(d) { return d.data.percentage + "%"; });
 
    g4.append("text")
-   .attr("x", (width / 2))             
-   .attr("y", 0 - (margin.top ))
+   .attr("x", (width / 11 ))             
+   .attr("y", 172 - (margin.bottom))
    .attr("text-anchor", "middle")  
    .style("font-size", "16px") 
    .style("text-decoration", "underline")  
-   .text("Number of buckets encrypted and unencrypted");
+   .text("Buckets encrypted and unencrypted");
  
 });
 
