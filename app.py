@@ -25,7 +25,7 @@ from time import gmtime, strftime
 from flask import send_file
 from flask import Flask, render_template
 import logging
-#def add_cors_headers(response)::
+#def add_cors_headers(response):
 #    response.headers['Access-Control-Allow-Origin'] = 'http://127.0.0.1:5000'
 #    response.headers['Access-Control-Allow-Credentials'] = 'true'
 #    response.headers['Access-Control-Allow-Methods'] = 'GET', 'POST', 'OPTIONS'
@@ -539,13 +539,13 @@ def allcount():
         for x in range(len(bucketnames)):
             b = bucketnames[x]
             d={}
-            d.update( {'type' : b} )
+            d.update( {'bucket' : b} )
             my_bucket = s3_resource.Bucket(b)
             mybucs = [file.key for file in my_bucket.objects.all()]
             lengh = len(mybucs)
             #for file in mybucs:
             #    d.setdefault("Filenames", []).append(file)
-            d.update( {'buckets' : lengh} )
+            d.update( {'objectscount' : lengh} )
             allobjects.append(d)
         d1={}
         #d2={}
