@@ -25,7 +25,7 @@ from time import gmtime, strftime
 from flask import send_file
 from flask import Flask, render_template
 import logging
-#def add_cors_headers(response):
+#def add_cors_headers(response)::
 #    response.headers['Access-Control-Allow-Origin'] = 'http://127.0.0.1:5000'
 #    response.headers['Access-Control-Allow-Credentials'] = 'true'
 #    response.headers['Access-Control-Allow-Methods'] = 'GET', 'POST', 'OPTIONS'
