@@ -245,23 +245,31 @@ Following is the sample output
 ### 12. API URL : [Get Files from Cache](http://127.0.0.1:5000/getfile?filename=allcount.json)
 **Purpose:** This API does the following steps
 
-get filename
+-get filename
+-calculate the recency in minutes
+-if less than 60 minutes:
+      -send the file from cache
+-else:
+   -call the original API
+-save data to file
+-return the new file
 
-calculate the recency in minutes
+### 13. API URL :[Get the count of encrypted buckets](http://127.0.0.1:5000/bucketencryptiondetails)
+**Purpose:** This API gets the count of encrypted and unencrypted buckets
+Following is the sample output
+```[
+  {
+    "count": 2, 
+    "type": "encrypted"
+  }, 
+  {
+    "count": 8, 
+    "type": "unencrypted"
+  }
+]
+```
 
-if less than 60 minutes:
-
-send the file from cache
-
-else:
-
-call the original API
-
-save data to file
-
-return the new file
-
-
+### 14. API URL : []() 
 ### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/Dashboard.html)
 
 
