@@ -5,7 +5,7 @@ var margint = {topt: 40, rightt: 22, bottomt: 110, leftt: 40},
 
 
 
-// set the ranges
+// sset the ranges
 var x = d3.scaleBand()
           .range([0, widtht])
           .padding(0.1);
