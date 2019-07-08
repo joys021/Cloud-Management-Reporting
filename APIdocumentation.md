@@ -246,15 +246,22 @@ Following is the sample output
 **Purpose:** This API does the following steps
 
 -get filename
+
 -calculate the recency in minutes
+
 -if less than 60 minutes:
+
       -send the file from cache
+      
 -else:
+   
    -call the original API
+
 -save data to file
+
 -return the new file
 
-### 13. API URL :[Get the count of encrypted buckets](http://127.0.0.1:5000/bucketencryptiondetails)
+### 13. API URL :[Count of encrypted buckets](http://127.0.0.1:5000/bucketencryptiondetails)
 **Purpose:** This API gets the count of encrypted and unencrypted buckets
 Following is the sample output
 ```[
@@ -270,7 +277,7 @@ Following is the sample output
 ```
 
 
-### 14. API URL : [Get count of objects in each bucket](http://127.0.0.1:5000/allcount)
+### 14. API URL : [Count of objects in each bucket](http://127.0.0.1:5000/allcount)
 **Purpose:** This API gets the count of objects in each bucket\
 Following is the sample output
 ```[
@@ -397,7 +404,7 @@ Following is the sample output
 ```
 
 
-### 17. API URL : [intance count in each region](http://127.0.0.1:5000/instancestate)
+### 17. API URL : [Count of Instances in each region](http://127.0.0.1:5000/instancestate)
 **Purpose:** This API gets count of instances present in each region of an account
 Following is the sample output
 ```[
