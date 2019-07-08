@@ -476,7 +476,7 @@ Following is the sample output
 ```
 
 
-### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/Dashboard.html)
+### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/s3Dashboard.html)
 
 
 # Few APIs that would perform basic functions
