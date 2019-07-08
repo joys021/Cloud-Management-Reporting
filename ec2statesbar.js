@@ -51,7 +51,7 @@ d3.json("http://127.0.0.1:5000/getfile?filename=instancestate.json", function(er
       .attr("transform", "translate(0," + heighttt + ")")
       .call(d3.axisBottom(x));
 
-  // add the y Axis
+  // add the y Axiss
   svgttt.append("g")
       .call(d3.axisLeft(y));
   
