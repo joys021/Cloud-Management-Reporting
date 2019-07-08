@@ -1,4 +1,4 @@
-// marginn
+// margin
 var margin = {top: 20, right: 20, bottom: 20, left: 20},
     width = 350 - margin.right - margin.left,
     height = 350 - margin.top - margin.bottom,
@@ -29,7 +29,7 @@ var labelArc = d3.arc()
 // generate pie chart and donut chart
 var pie = d3.pie()
     .sort(null)
-    .value(function(d) { return d.buckets; });
+    .value(function(d) { return d.objectscount; });
 
 // define the svg for pie chart
 var svg3 = d3.select("body").append("svg")
@@ -54,8 +54,8 @@ var svg2 = d3.select("body").append("svg")
 d3.json("http://127.0.0.1:5000/getfile?filename=allcount.json", function(error, data) {
 
     data.forEach(function(d) {
-        d.type = d.type;
-        d.buckets = +d.buckets;
+        d.bucket = d.bucket;
+        d.objectscount = +d.objectscount;
     });
 
 
@@ -70,7 +70,7 @@ d3.json("http://127.0.0.1:5000/getfile?filename=allcount.json", function(error, 
   // append path 
   g.append("path")
       .attr("d", arc)
-      .style("fill", function(d) { return color(d.data.type); })
+      .style("fill", function(d) { return color(d.data.bucket); })
     // transition 
     .transition()
       .ease(d3.easeLinear)
@@ -84,7 +84,7 @@ d3.json("http://127.0.0.1:5000/getfile?filename=allcount.json", function(error, 
       .duration(2000)
     .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
       .attr("dy", ".35em")
-      .text(function(d) { return d.data.type; });
+      .text(function(d) { return d.data.bucket; });
     
       g.append("text")
       .attr("x", (width / 10 ))             
