@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
-var margine = {tope: 50, righte: 22, bottome: 110, lefte: 40},
+var margine = {tope: 40, righte: 22, bottome: 110, lefte: 40},
     widthe = 700 - margine.lefte - margine.righte,
-    heighte = 350 - margine.tope - margine.bottome;
+    heighte = 320 - margine.tope - margine.bottome;
 
 
 
@@ -57,7 +57,7 @@ d3.json("http://127.0.0.1:5000/getfile?filename=bucketsize.json", function(error
   
       svgt.append("text")
       .attr("x", (width / 2))             
-      .attr("y", 0 - (margin.top ))
+      .attr("y", 230 - (margin.bottom ))
       .attr("text-anchor", "middle")  
       .style("font-size", "16px") 
       .style("text-decoration", "underline")  
