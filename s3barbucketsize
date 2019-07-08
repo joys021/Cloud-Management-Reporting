@@ -36,7 +36,7 @@ d3.json("http://127.0.0.1:5000/getfile?filename=bucketsize.json", function(error
   x.domain(data.map(function(d) { return d.bucket; }));
   y.domain([0, d3.max(data, function(d) { return d.size; })]);
 
-  // append the rectangles for the bar chart
+  // append the rectangles for the bar chartt
   svgt.selectAll(".bar")
       .data(data)
     .enter().append("rect")
