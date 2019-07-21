@@ -932,6 +932,46 @@ def totalsecuritygroups():
 
 
 
+@app.route('/readcloudtraillogs')
+def readcloudtraillogs():
+    path = 'venv/cache/2015_cloudtrail/2015/01'
+    files = []
+    events = []
+    # r=root, d=directories, f = files
+    for r, d, f in os.walk(path):
+        for file in f:
+            if '.json' in file:
+                files.append(os.path.join(r, file))       
+    with open("venv/cache/log.json", "wb") as outfile:
+        for f in files:
+            with open(f, "rb") as infile:
+                outfile.write(infile.read())
+    #text = open("venv/cache/2015_cloudtrail/2015/01/01/361166629815_CloudTrail_us-east-1_20150101T0000Z_nqSzxQ623cykwe1r.json", 'r+')
+    #content = text.read()
+    with open("venv/cache/2015_cloudtrail/2015/01/01/361166629815_CloudTrail_us-east-1_20150101T0000Z_nqSzxQ623cykwe1r.json", 'r') as f:
+        datastore = json.load(f)    
+    #cont.update({'data' : content})
+    #text.close()
+    eventtime = []
+    username = []
+    src = []
+    arn = []
+    for x in range(len(datastore['Records'])):
+        events.append(datastore['Records'][x]['eventName'])
+        eventtime.append(datastore['Records'][x]['eventTime'])
+        username.append(datastore['Records'][x]['userIdentity']['userName'])
+        arn.append(datastore['Records'][x]['userIdentity']['arn'])
+        src.append(datastore['Records'][x]['sourceIPAddress'])
+    d = {}
+    d.update({'EventNames':events })
+    d.update({'Eventtime':eventtime })
+    d.update({'Username':username})
+    d.update({'ARN':arn})
+    d.update({'SourceIPAddress':src})
+    overall = []
+    overall.append(d)
+    return jsonify(overall)
+    
 
 
     
