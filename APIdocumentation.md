@@ -474,7 +474,69 @@ Following is the sample output
   }
 ]
 ```
-
+### 18. API URL : [Event details recorded in Cloud trial for a day](http://127.0.0.1:5000/instancestate)
+**Purpose:** This API gives the details of the events recorded in a day.
+Following is the sample output
+```[
+  {
+    "ARN": [
+      "arn:aws:iam::361166629815:root", 
+      "arn:aws:iam::361166629815:root", 
+      "arn:aws:iam::361166629815:root", 
+      "arn:aws:iam::361166629815:root", 
+      "arn:aws:iam::361166629815:root", 
+      "arn:aws:iam::361166629815:root", 
+      "arn:aws:iam::361166629815:root", 
+      "arn:aws:iam::361166629815:root", 
+      "arn:aws:iam::361166629815:root"
+    ], 
+    "EventNames": [
+      "DescribeScalingActivities", 
+      "DescribeAutoScalingGroups", 
+      "DescribeScalingActivities", 
+      "DescribeInstanceHealth", 
+      "DescribeScalingActivities", 
+      "DescribeAutoScalingGroups", 
+      "DescribeScalingActivities", 
+      "DescribeInstanceHealth", 
+      "DescribeScalingActivities"
+    ], 
+    "Eventtime": [
+      "2014-12-31T23:57:26Z", 
+      "2014-12-31T23:56:25Z", 
+      "2014-12-31T23:55:24Z", 
+      "2014-12-31T23:57:26Z", 
+      "2014-12-31T23:56:25Z", 
+      "2014-12-31T23:57:26Z", 
+      "2014-12-31T23:57:26Z", 
+      "2014-12-31T23:56:25Z", 
+      "2014-12-31T23:56:25Z"
+    ], 
+    "SourceIPAddress": [
+      "elasticbeanstalk.amazonaws.com", 
+      "elasticbeanstalk.amazonaws.com", 
+      "elasticbeanstalk.amazonaws.com", 
+      "elasticbeanstalk.amazonaws.com", 
+      "elasticbeanstalk.amazonaws.com", 
+      "elasticbeanstalk.amazonaws.com", 
+      "elasticbeanstalk.amazonaws.com", 
+      "elasticbeanstalk.amazonaws.com", 
+      "elasticbeanstalk.amazonaws.com"
+    ], 
+    "Username": [
+      "mw-internal", 
+      "mw-internal", 
+      "mw-internal", 
+      "mw-internal", 
+      "mw-internal", 
+      "mw-internal", 
+      "mw-internal", 
+      "mw-internal", 
+      "mw-internal"
+    ]
+  }
+]
+```
 
 ### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/s3Dashboard.html)
 
