@@ -538,6 +538,27 @@ Following is the sample output
 ]
 ```
 
+
+### 19. API URL : [Total rules](http://127.0.0.1:5000/totalrules)
+**Purpose:** This API gives the total number of rules in all security groups in all regions.
+Following is the sample output
+```[
+  {
+    "totalrules": 44
+  }
+]
+```
+
+### 20. API URL : [Total security groups](http://127.0.0.1:5000/totalsecuritygroups)
+**Purpose:** This API gives the total number of security groups in all regions.
+Following is the sample output
+```[
+  {
+    "totalsecuritygroups": 22
+  }
+]
+```
+
 ### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/s3Dashboard.html)
 
 
