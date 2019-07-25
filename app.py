@@ -1054,6 +1054,54 @@ def totalrules():
         return jsonify(err)
 
 
+      
+
+#get top ten events performed in a day
+@app.route('/toptenevents')
+def toptenevents():
+    path = 'venv/cache/2015_cloudtrail/2015/01/01'
+    path_to_json = 'venv/cache/2015_cloudtrail/2015/01/01'
+    json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
+    files = []
+    events = []
+    eventtime = []
+    username = []
+    src = []
+    arn = []
+    d = {}
+    overall = []
+    for r, d, f in os.walk(path):
+        for file in f:
+            if '.json' in file:
+                files.append(os.path.join(r, file))         
+    for index, js in enumerate(files):
+        with open(js, 'r') as f:
+            datastore = json.load(f)
+            for x in range(len(datastore['Records'])):
+                events.append(datastore['Records'][x]['eventName'])
+                #eventtime.append(datastore['Records'][x]['eventTime'])
+                #username.append(datastore['Records'][x]['userIdentity']['userName'])
+                #arn.append(datastore['Records'][x]['userIdentity']['arn'])
+                #src.append(datastore['Records'][x]['sourceIPAddress'])
+        d = {}
+        #sorted_dict = {}
+        dd = []
+        newevent = {}
+        newevent = Counter(events) 
+        d.update({'EventNames' : Counter(events) })
+        #sorted_dict = sorted(newevent.items(), key=operator.itemgetter(1), reverse=True)
+        sorted_dict = sorted(newevent.items(), key=operator.itemgetter(1),reverse=True)
+        dd = OrderedDict(sorted(newevent.items(), key=lambda x: x[1]))
+        d.update({'EventNames' : sorted_dict[:10] })
+        #d.update({'Eventtime':eventtime })
+        #d.update({'Username':username})
+        #d.update({'ARN':arn})
+        #d.update({'SourceIPAddress':src})
+        #overall = []
+    overall = []
+    overall.append(d)
+    return jsonify(overall)
+
     
 if __name__ == '__main__':
     app.run()
