@@ -1011,6 +1011,49 @@ def readcloudtraillogs():
     overall.append(d)
     return jsonify(overall)
 
+ 
+# to get total rules in all security groups in all regions in an account
+@app.route('/totalrules', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def totalrules():
+    #location=request.args.get('location')
+    client = boto3.client('ec2', region_name='us-east-1')
+    err = {}
+    #RunningInstances = []
+    regionnames =[]
+    #allobjects = {}
+    err.update({'message':"400"})
+    try:
+        val = []
+        allstate = []
+        rules = []
+        response = client.describe_regions()
+        jj = list(response['Regions'])
+        for i in jj:
+            val.append(i.get('RegionName'))
+        #regionnames = list(regions)
+        for x in range(len(val)):
+            b = val[x]
+            d = {}
+            ec2 = boto3.client('ec2', region_name=b)
+            sec_groups = ec2.describe_security_groups()['SecurityGroups']
+            for y in range(len(sec_groups)):
+                rules.append(sec_groups[y]['IpPermissions'])
+                rules.append(sec_groups[y]['IpPermissionsEgress'])
+                #a = val[y]
+                #rules =                 
+            allstate.append(len(rules))
+        d1={}
+        d1.update({"totalrules":len(rules)})
+        ll = []
+        ll.append(d1)
+        return jsonify(ll)
+    except ClientError as e:    
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+
     
 if __name__ == '__main__':
     app.run()
