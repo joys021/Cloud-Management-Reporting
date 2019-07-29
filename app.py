@@ -1108,6 +1108,11 @@ def toptenevents():
 @app.route('/topteneventsinamonth')
 def topteneventsinamonth():
     all1 = []
+    all2 = []
+    add = {}
+    d = {}
+    ff = {}
+    orig = collections.Counter()
     for uu in range(1,32):
         if uu < 10:
             path = 'venv/cache/2015_cloudtrail/2015/01/0'+ str(uu)
@@ -1130,11 +1135,24 @@ def topteneventsinamonth():
                     events.append(datastore['Records'][x]['eventName'])
         newevent = {}
         newevent = Counter(events)
-        dd = OrderedDict(sorted(newevent.items(), key=lambda x: x[1]))
+        #dd = OrderedDict(sorted(newevent.items(), key=lambda x: x[1]))
         #all1 = []
-        all1.append(dd)
+        all1.append(newevent)
     overall.append(all1)
-    return jsonify(overall)
+    orig = collections.Counter()
+    for ele in range(0, len(all1)):
+        #vv.append(all1[ele])
+        orig = orig + all1[ele]
+    #for i in all1:
+     #   add = orig + i
+    nn = {}
+    d = {}
+    nn = Counter(orig)
+    ff = OrderedDict(sorted(nn.items(), key=lambda x: x[1]))
+    sorted_dict = sorted(nn.items(), key=operator.itemgetter(1),reverse=True)
+    d.update({'EventNames' : sorted_dict[:10] })
+    all2.append(d)
+    return jsonify(all2)
 
 
   
