@@ -1102,6 +1102,42 @@ def toptenevents():
     overall.append(d)
     return jsonify(overall)
 
+  
+
+#get top ten events performed in a month
+@app.route('/topteneventsinamonth')
+def topteneventsinamonth():
+    all1 = []
+    for uu in range(1,32):
+        if uu < 10:
+            path = 'venv/cache/2015_cloudtrail/2015/01/0'+ str(uu)
+        else:
+            path = 'venv/cache/2015_cloudtrail/2015/01/'+ str(uu)
+        files = []
+        #path = 'venv/cache/2015_cloudtrail/2015/01/08'
+        events = []
+        d = {}
+        #all1 = []
+        overall = []
+        for r, d, f in os.walk(path):
+            for file in f:
+                if '.json' in file:
+                    files.append(os.path.join(r, file))  
+        for index, js in enumerate(files):
+            with open(js, 'r') as f:
+                datastore = json.load(f)
+                for x in range(len(datastore['Records'])):
+                    events.append(datastore['Records'][x]['eventName'])
+        newevent = {}
+        newevent = Counter(events)
+        dd = OrderedDict(sorted(newevent.items(), key=lambda x: x[1]))
+        #all1 = []
+        all1.append(dd)
+    overall.append(all1)
+    return jsonify(overall)
+
+
+  
     
 if __name__ == '__main__':
     app.run()
