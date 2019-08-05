@@ -1142,6 +1142,64 @@ def topteneventsinamonth():
 
 
   
+ 
+#get top ten events performed in a month
+@app.route('/totalcreate_update_delete_events')
+def totalcreateevents():
+    all1 = []
+    all2 = []
+    add = {}
+    d = {}
+    ff = {}
+    orig = collections.Counter()
+    for uu in range(1,32):
+        if uu < 10:
+            path = 'venv/cache/2015_cloudtrail/2015/01/0'+ str(uu)
+        else:
+            path = 'venv/cache/2015_cloudtrail/2015/01/'+ str(uu)
+        files = []
+        #path = 'venv/cache/2015_cloudtrail/2015/01/08'
+        events = []
+        d = {}
+        #all1 = []
+        overall = []
+        for r, d, f in os.walk(path):
+            for file in f:
+                if file.endswith('.json'):
+                    files.append(os.path.join(r, file))  
+        for index, js in enumerate(files):
+            with open(js, 'r') as f:
+                datastore = json.load(f)
+                for x in range(len(datastore['Records'])):
+                    events.append(datastore['Records'][x]['eventName'])
+        newevent = {}
+        newevent = Counter(events)
+        #dd = OrderedDict(sorted(newevent.items(), key=lambda x: x[1]))
+        #all1 = []
+        all1.append(newevent)
+    overall.append(all1)
+    orig = collections.Counter()
+    for ele in range(0, len(all1)):
+        #vv.append(all1[ele])
+        orig = orig + all1[ele]
+    #for i in all1:
+     #   add = orig + i
+    nn = {}
+    d = {}
+    up = []
+    dl = []
+    h = []
+    nn = Counter(orig)
+    ff = OrderedDict(sorted(nn.items(), key=lambda x: x[1]))
+    hh = [value for key,value in ff.items() if key.startswith("Create")]
+    up = [value for key,value in ff.items() if key.startswith("Update")]
+    dl = [value for key,value in ff.items() if key.startswith("Delete")]
+    d.update({'total_creates' : sum(hh) })
+    d.update({'total_updates' : sum(up) })
+    d.update({'total_deletes' : sum(dl) })
+    all2.append(d)
+    return jsonify(all2)
+  
     
 if __name__ == '__main__':
     app.run()
