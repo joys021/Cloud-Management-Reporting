@@ -1092,18 +1092,26 @@ def toptenevents():
 
 #get top ten events performed in a month
 @app.route('/topteneventsinamonth')
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def topteneventsinamonth():
+    month=request.args.get('month')
     all1 = []
     all2 = []
     add = {}
     d = {}
     ff = {}
+    mon = []
     orig = collections.Counter()
+    llist = ['start','jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+    mon = [i for i, j in enumerate(llist) if j == month]
+    mo = mon[0]
+    m = ("{:02d}".format(mo))
     for uu in range(1,32):
         if uu < 10:
-            path = 'venv/cache/2015_cloudtrail/2015/01/0'+ str(uu)
+            path = 'venv/cache/2015_cloudtrail/2015/'+str(m)+'/0'+ str(uu)
         else:
-            path = 'venv/cache/2015_cloudtrail/2015/01/'+ str(uu)
+            path = 'venv/cache/2015_cloudtrail/2015/'+str(m)+'/'+ str(uu)
         files = []
         #path = 'venv/cache/2015_cloudtrail/2015/01/08'
         events = []
