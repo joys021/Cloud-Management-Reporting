@@ -559,6 +559,113 @@ Following is the sample output
 ]
 ```
 
+
+### 21. API URL : [Top ten events in a day](http://127.0.0.1:5000/toptenevents)
+**Purpose:** This API gives the top ten events happened in a day.
+Following is the sample output
+```[
+  {
+    "EventNames": [
+      [
+        "DescribeScalingActivities", 
+        224
+      ], 
+      [
+        "DescribeInstanceHealth", 
+        122
+      ], 
+      [
+        "DescribeAutoScalingGroups", 
+        121
+      ], 
+      [
+        "DescribeReservedInstances", 
+        4
+      ], 
+      [
+        "DescribeTags", 
+        3
+      ], 
+      [
+        "DescribeInstances", 
+        3
+      ], 
+      [
+        "DescribeVolumes", 
+        1
+      ]
+    ]
+  }
+]
+```
+
+
+
+### 22. API URL : [Top ten events in a month](http://127.0.0.1:5000/topteneventsinamonth)
+**Purpose:** This API gives the top ten events happened in a month.
+Following is the sample output
+```[
+  {
+    "EventNames": [
+      [
+        "DescribeScalingActivities", 
+        7801
+      ], 
+      [
+        "DescribeAutoScalingGroups", 
+        4327
+      ], 
+      [
+        "DescribeInstanceHealth", 
+        4000
+      ], 
+      [
+        "DescribeAlarms", 
+        2362
+      ], 
+      [
+        "DescribeVolumes", 
+        1393
+      ], 
+      [
+        "DescribeLoggingStatus", 
+        1245
+      ], 
+      [
+        "DescribeVolumeStatus", 
+        1179
+      ], 
+      [
+        "DescribeClusters", 
+        1153
+      ], 
+      [
+        "DescribeTags", 
+        644
+      ], 
+      [
+        "DescribeEvents", 
+        633
+      ]
+    ]
+  }
+]
+```
+
+
+### 23. API URL : [Total create, update and delete events](http://127.0.0.1:5000/totalcreate_update_delete_events)
+**Purpose:** This API gives the total number of screate, update and delete events happened in a month.
+Following is the sample output
+```[
+  {
+    "total_creates": 154, 
+    "total_deletes": 168, 
+    "total_updates": 2
+  }
+]
+```
+
+
 ### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/s3Dashboard.html)
 
 
@@ -593,3 +700,5 @@ Following is the sample output:
   ]
 }
 ```
+
+
