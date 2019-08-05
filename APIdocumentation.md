@@ -601,7 +601,7 @@ Following is the sample output
 
 
 
-### 22. API URL : [Top ten events in a month](http://127.0.0.1:5000/topteneventsinamonth)
+### 22. API URL : [Top ten events in a month](http://127.0.0.1:5000/topteneventsinamonth?month=dec)
 **Purpose:** This API gives the top ten events happened in a month.
 Following is the sample output
 ```[
