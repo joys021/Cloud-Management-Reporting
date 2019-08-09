@@ -1,9 +1,11 @@
+import pdb
 from flask import Flask, render_template, flash, request,json
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from flask import Flask,render_template, jsonify
 from flask_bootstrap import Bootstrap
 from flask_marshmallow import Marshmallow
 import boto3, requests
+import pandas as pd
 from botocore.client import Config
 from config import S3_BUCKET, S3_KEY, S3_SECRET
 import logging
@@ -17,6 +19,7 @@ logging.basicConfig(level=logging.INFO)
 from flask_cors import CORS, cross_origin
 import os, time
 import datetime
+from collections import Counter
 import os.path
 from os import path
 from datetime import timedelta
@@ -25,6 +28,12 @@ from time import gmtime, strftime
 from flask import send_file
 from flask import Flask, render_template
 import logging
+import glob
+from collections import Counter
+import collections
+import operator
+from operator import itemgetter
+from collections import OrderedDict
 #def add_cors_headers(response):
 #    response.headers['Access-Control-Allow-Origin'] = 'http://127.0.0.1:5000'
 #    response.headers['Access-Control-Allow-Credentials'] = 'true'
@@ -297,7 +306,7 @@ def allbucs():
 
 #display the bucket details when name of the bucket is given
 
-@app.route('/listfilesinabucket', methods = ['POST'])
+@app.route('/listfilesinabucket', methods = ['POST'])   
 @cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
 @cross_origin(headers=['Content-Type'])
 def my_form():
@@ -895,7 +904,7 @@ def instancestate():
 
 
 
-
+# to get total security groups in all regions in an account
 @app.route('/totalsecuritygroups', methods = ['GET', 'POST'])
 @cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
 @cross_origin(headers=['Content-Type'])
@@ -930,10 +939,50 @@ def totalsecuritygroups():
         err.update({'Error':e.response['Error']['Code']})
         return jsonify(err)
 
-
-
+#get details from multiple log files - 1 day
 @app.route('/readcloudtraillogs')
 def readcloudtraillogs():
+    path = 'venv/cache/2015_cloudtrail/2015/01/01'
+    path_to_json = 'venv/cache/2015_cloudtrail/2015/01/01'
+    json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
+    files = []
+    events = []
+    eventtime = []
+    username = []
+    src = []
+    arn = []
+    d = {}
+    overall = []
+    for r, d, f in os.walk(path):
+        for file in f:
+            if '.json' in file:
+                files.append(os.path.join(r, file))         
+    for index, js in enumerate(files):
+        with open(js, 'r') as f:
+            datastore = json.load(f)
+            for x in range(len(datastore['Records'])):
+                events.append(datastore['Records'][x]['eventName'])
+                eventtime.append(datastore['Records'][x]['eventTime'])
+                username.append(datastore['Records'][x]['userIdentity']['userName'])
+                arn.append(datastore['Records'][x]['userIdentity']['arn'])
+                src.append(datastore['Records'][x]['sourceIPAddress'])
+        d = {}
+        d.update({'Events' : events})
+        d.update({'EventNames':events })
+        d.update({'Eventtime':eventtime })
+        d.update({'Username':username})
+        d.update({'ARN':arn})
+        d.update({'SourceIPAddress':src})
+        overall = []
+    overall = []
+    overall.append(d)
+    return jsonify(overall)
+           
+
+    
+#get details from single log file
+@app.route('/readsinglelog')
+def readsinglelog():
     path = 'venv/cache/2015_cloudtrail/2015/01'
     files = []
     events = []
@@ -971,47 +1020,9 @@ def readcloudtraillogs():
     overall = []
     overall.append(d)
     return jsonify(overall)
-    
-#get details from multiple log files - 1 day
-@app.route('/readcloudtraillogs')
-def readcloudtraillogs():
-    path = 'venv/cache/2015_cloudtrail/2015/01/01'
-    path_to_json = 'venv/cache/2015_cloudtrail/2015/01/01'
-    json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
-    files = []
-    events = []
-    eventtime = []
-    username = []
-    src = []
-    arn = []
-    d = {}
-    overall = []
-    for r, d, f in os.walk(path):
-        for file in f:
-            if '.json' in file:
-                files.append(os.path.join(r, file))         
-    for index, js in enumerate(files):
-        with open(js, 'r') as f:
-            datastore = json.load(f)
-            for x in range(len(datastore['Records'])):
-                events.append(datastore['Records'][x]['eventName'])
-                eventtime.append(datastore['Records'][x]['eventTime'])
-                username.append(datastore['Records'][x]['userIdentity']['userName'])
-                arn.append(datastore['Records'][x]['userIdentity']['arn'])
-                src.append(datastore['Records'][x]['sourceIPAddress'])
-        d = {}           
-        #d.update({'Events' : events})
-        d.update({'EventNames':events })
-        d.update({'Eventtime':eventtime })
-        d.update({'Username':username})
-        d.update({'ARN':arn})
-        d.update({'SourceIPAddress':src})
-        #overall = []
-    overall = []
-    overall.append(d)
-    return jsonify(overall)
 
- 
+
+
 # to get total rules in all security groups in all regions in an account
 @app.route('/totalrules', methods = ['GET', 'POST'])
 @cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
@@ -1054,8 +1065,6 @@ def totalrules():
         return jsonify(err)
 
 
-      
-
 #get top ten events performed in a day
 @app.route('/toptenevents')
 def toptenevents():
@@ -1087,7 +1096,6 @@ def toptenevents():
     overall.append(d)
     return jsonify(overall)
            
-
 
 
 #get top ten events performed in a month
@@ -1149,8 +1157,7 @@ def topteneventsinamonth():
     return jsonify(all2)
 
 
-  
- 
+
 #get top ten events performed in a month
 @app.route('/totalcreate_update_delete_events')
 def totalcreateevents():
@@ -1207,9 +1214,115 @@ def totalcreateevents():
     d.update({'total_deletes' : sum(dl) })
     all2.append(d)
     return jsonify(all2)
-  
+
+
+
+# get the top destination addresses
+@app.route('/topdestinationaddresses', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def topdestinationaddresses():
+    #location=request.args.get('location')
+    client = boto3.client('ec2', region_name='us-east-1')
+    err = {}
+    #RunningInstances = []
+    regionnames =[]
+    #allobjects = {}
+    err.update({'message':"400"})
+    try:
+        val = []
+        allstate = []
+        rules = []
+        response = client.describe_regions()
+        jj = list(response['Regions'])
+        for i in jj:
+            val.append(i.get('RegionName'))
+        #regionnames = list(regions)
+        for x in range(len(val)):
+            b = val[x]
+            d = {}
+            ec2 = boto3.client('ec2', region_name=b)
+            sec_groups = ec2.describe_route_tables()['RouteTables']
+            for y in range(len(sec_groups)):
+                rul = sec_groups[y]['Routes']
+                for i in range(len(rul)):
+                    rules.append(rul[i]['DestinationCidrBlock'])                    
+                #rules.append(sec_groups[y]['IpPermissionsEgress'])
+                #a = val[y]
+                #rules =
+            nn = {}
+            nn = Counter(rules)
+            allstate.append(len(rules))
+        d1={}
+        d1.update({"totaldestinations": nn})
+        ll = []
+        ll.append(nn)
+        return jsonify(ll)
+    except ClientError as e:    
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+
+
+
+
+#get the errors occured in any given month
+@app.route('/errors')
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def errors():
+    month=request.args.get('month')
+    all1 = []
+    all2 = []
+    add = {}
+    d = {}
+    ff = {}
+    mon = []
+    orig = collections.Counter()
+    llist = ['start','jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+    mon = [i for i, j in enumerate(llist) if j == month]
+    mo = mon[0]
+    m = ("{:02d}".format(mo))
+    for uu in range(1,32):
+        if uu < 10:
+            path = 'venv/cache/2015_cloudtrail/2015/'+str(m)+'/0'+ str(uu)
+        else:
+            path = 'venv/cache/2015_cloudtrail/2015/'+str(m)+'/'+ str(uu)
+        files = []
+        #path = 'venv/cache/2015_cloudtrail/2015/01/08'
+        events = []
+        d = {}
+        d1={}
+        #all1 = []
+        overall = []
+        for r, d, f in os.walk(path):
+            for file in f:
+                if file.endswith('.json'):
+                    files.append(os.path.join(r, file))  
+        for index, js in enumerate(files):
+            with open(js, 'r') as f:
+                datastore = json.load(f)
+                for x in range(len(datastore['Records'])):
+                    if 'errorCode' in (datastore['Records'][x]):
+                        d1={}
+                        events.append(datastore['Records'][x]['errorCode'])
+                        d1.update({"Error Code":datastore['Records'][x]['errorCode'] })
+                        d1.update({"Error Message":datastore['Records'][x]['errorMessage'] })
+                        overall.append(d1)
+        return jsonify(overall)
+
+
+    
+@app.route('/paths')
+def contentpaths():
+    path = 'venv/cache/2015_cloudtrail/2015/01/'+ str(x)
+    #d = {}
+    #d.update({'pp' : path})
+    overall1 = []
+    overall1.append(path)
+    return jsonify(overall1)
+    return(path)
+
     
 if __name__ == '__main__':
     app.run()
-
-    
