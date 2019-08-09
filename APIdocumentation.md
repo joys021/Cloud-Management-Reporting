@@ -665,6 +665,40 @@ Following is the sample output
 ]
 ```
 
+### 24. API URL : [All Destination Addresses](http://127.0.0.1:5000/topdestinationaddresses)
+**Purpose:** This API gives top destination addresses in a route table
+Following is the sample output
+```[
+  {
+    "0.0.0.0/0": 16, 
+    "172.31.0.0/16": 16
+  }
+]
+```
+
+
+### 25. API URL : [Errors recorded in Logs](http://127.0.0.1:5000/errors?month=sep)
+**Purpose:** This API gets the errors occured in any given month
+Following is the sample output
+```[
+  {
+    "Error Code": "AccessDenied", 
+    "Error Message": "User: arn:aws:iam::361166629815:user/mw-ops is not authorized to perform: iam:ListUsers on resource: arn:aws:iam::361166629815:user/"
+  }, 
+  {
+    "Error Code": "AccessDenied", 
+    "Error Message": "User: arn:aws:iam::361166629815:user/smukherjee@mobilewalla.com is not authorized to perform: cloudfront:ListDistributions"
+  }, 
+  {
+    "Error Code": "ValidationException", 
+    "Error Message": "1 validation error detected: Value 'INVALID_FOR_SUMMARY' at 'stateValue' failed to satisfy constraint: Member must satisfy enum value set: [INSUFFICIENT_DATA, ALARM, OK]"
+  }, 
+  {
+    "Error Code": "ValidationException", 
+    "Error Message": "1 validation error detected: Value 'INVALID_FOR_SUMMARY' at 'stateValue' failed to satisfy constraint: Member must satisfy enum value set: [INSUFFICIENT_DATA, ALARM, OK]"
+  }
+ ]
+```
 
 ### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/s3Dashboard.html)
 
