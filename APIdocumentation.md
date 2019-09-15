@@ -700,6 +700,18 @@ Following is the sample output
  ]
 ```
 
+### 26. API URL : [Total rules](http://127.0.0.1:5000/totalvpcs)
+**Purpose:** This API gives the total number of VPCs, security groups and NACLs across all regions in a acount.
+Following is the sample output
+```[
+  {
+    "totalnacls": 32, 
+    "totalsubnets": 32, 
+    "totalvpcs": 32
+  }
+]
+```
+
 ### [HTML Code for Dashboard](https://github.com/joys021/Flask/blob/master/s3Dashboard.html)
 
 
