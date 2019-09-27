@@ -687,7 +687,7 @@ Following is the sample output
   }, 
   {
     "Error Code": "AccessDenied", 
-    "Error Message": "User: arn:aws:iam::361166629815:user/smukherjee@mobilewalla.com is not authorized to perform: cloudfront:ListDistributions"
+    "Error Message": "User: arn:aws:iam::361166629815:user/xxxx@jjj.com is not authorized to perform: cloudfront:ListDistributions"
   }, 
   {
     "Error Code": "ValidationException", 
