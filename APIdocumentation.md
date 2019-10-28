@@ -474,7 +474,7 @@ Following is the sample output
   }
 ]
 ```
-### 18. API URL : [Event details recorded in Cloud trial for a day](http://127.0.0.1:5000/instancestate)
+### 18. API URL : [Event details recorded in Cloud trial for a day](http://127.0.0.1:5000/readcloudtraillogs)
 **Purpose:** This API gives the details of the events recorded in a day.
 Following is the sample output
 ```[
