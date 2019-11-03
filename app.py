@@ -1311,7 +1311,50 @@ def errors():
                         overall.append(d1)
         return jsonify(overall)
 
-
+#get the errors occured in any given month
+@app.route('/totaleventsinaday')
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def totaleventsinaday():
+    month=request.args.get('month')
+    day=request.args.get('day')
+    all1 = []
+    all2 = []
+    add = {}    
+    d = {}
+    ff = {}
+    mon = []
+    orig = collections.Counter()
+    llist = ['start','jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+    mon = [i for i, j in enumerate(llist) if j == month]
+    mo = mon[0]
+    print(type(day))
+    m = ("{:02d}".format(mo))
+    da = int(day)
+    print(da)
+    if da < 10:
+        path = 'venv/cache/2015_cloudtrail/2015/'+str(m)+'/0'+ str(da)
+    else:
+        path = 'venv/cache/2015_cloudtrail/2015/'+str(m)+'/'+ str(da)
+    print(path)
+    files = []
+    events = []
+    d = {}
+    overall = []
+    for r, d, f in os.walk(path):
+        for file in f:
+            if '.json' in file:
+                files.append(os.path.join(r, file))
+    for index, js in enumerate(files):
+        with open(js, 'r') as f:
+            datastore = json.load(f)
+            for x in range(len(datastore['Records'])):
+                events.append(datastore['Records'][x]['eventName'])
+        d = {}
+        d.update({'TotalEvents' : len(events)})
+    overall = []
+    overall.append(d)
+    return jsonify(overall)
     
 @app.route('/paths')
 def contentpaths():
