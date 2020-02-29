@@ -34,6 +34,8 @@ import collections
 import operator
 from operator import itemgetter
 from collections import OrderedDict
+import pandas as pd
+
 #def add_cors_headers(response):
 #    response.headers['Access-Control-Allow-Origin'] = 'http://127.0.0.1:5000'
 #    response.headers['Access-Control-Allow-Credentials'] = 'true'
@@ -66,8 +68,6 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 CORS(app, resources={r"/*": {"origins": "*","methods" : ['GET','POST','OPTIONS'] }})    
 Bootstrap(app)
-
-
 
 
 @app.route('/', methods = ['GET', 'POST'])
@@ -1160,6 +1160,8 @@ def topteneventsinamonth():
 
 #get top ten events performed in a month
 @app.route('/totalcreate_update_delete_events')
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
 def totalcreateevents():
     all1 = []
     all2 = []
@@ -1311,6 +1313,310 @@ def errors():
                         overall.append(d1)
         return jsonify(overall)
 
+
+
+# to get total rules in all security groups in all regions in an account
+@app.route('/totalvolumes', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def totalvolumes():
+    #location=request.args.get('location')
+    client = boto3.client('ec2', region_name='us-east-1')
+    err = {}
+    regionnames =[]
+    err.update({'message':"400"})
+    try:
+        ec2 = boto3.resource('ec2', region_name='us-west-2')
+        volumes = ec2.volumes.all() # If you want to list out all volumes
+        #volumes = ec2.volumes.filter(Filters=[{'Name': 'status', 'Values': ['in-use']}]) # if you want to list out only attached volumes
+        print ([volume for volume in volumes])
+        f = []
+        f = [volume for volume in volumes]
+        return jsonify(len(f))
+    except ClientError as e:    
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+
+# to get total rules in all security groups in all regions in an account
+@app.route('/totalprotocols', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def totalprotocols():
+    err = {}
+    err.update({'message':"400"})
+    try:
+        oprotocols = []
+        iprotocols = []
+        overall = []
+        ec2 = boto3.client('ec2',region_name='ap-south-1')
+        response = ec2.describe_security_groups()
+        #bucketnames = [bucket['Name'] for bucket in response['Buckets']]
+        for i in response['SecurityGroups']:
+            #d1={}
+            #d1.update({"Error Code":datastore['Records'][x]['errorCode'] })
+            #d1.update({"Error Message":datastore['Records'][x]['errorMessage'] })
+            #overall.append(d1)
+            oprotocols = [j['IpProtocol'] for j in i['IpPermissionsEgress']]
+            #ocidrips = [k['CidrIp'] for k in j['IpRanges']]
+            iprotocols = [j['IpProtocol'] for j in i['IpPermissions']]
+            #protocols = oprotocols + iprotocols
+            #len(list(set(protocols)))
+        return jsonify(iprotocols)
+    except ClientError as e:    
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+
+
+
+    
+@app.route('/paths')
+def contentpaths():
+    ec2 = boto3.client('ec2',region_name='ap-south-1')
+    ll = []
+    response = ec2.describe_security_groups()
+    for i in response['SecurityGroups']:
+        print ("Security Group Name: "+i['GroupName'])
+        print ("the Egress rules are as follows:")
+        for j in i['IpPermissionsEgress']:
+            print ("IP Protocol: "+j['IpProtocol'])
+            for k in j['IpRanges']:
+                print ("IP Ranges: "+k['CidrIp'])
+                ll.append(j['IpProtocol'])
+        print ("The Ingress rules are as follows: ")
+        for j in i['IpPermissions']:
+            print ("IP Protocol: "+j['IpProtocol'])
+            try:
+                print ("PORT: "+str(j['FromPort']))
+                for k in j['IpRanges']:
+                    print ("IP Ranges: "+k['CidrIp'])
+            except Exception:
+                print ("No value for ports and ip ranges available for this security group")
+                continue
+        return jsonify(ll)
+
+
+
+
+#get total events in a month
+@app.route('/totaleventsinmonth')
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def totaleventsinmonth():
+    all1 = []
+    all2 = []
+    add = {}
+    d = {}
+    ff = {}
+    orig = collections.Counter()
+    for uu in range(1,32):
+        if uu < 10:
+            path = 'venv/cache/2015_cloudtrail/2015/01/0'+ str(uu)
+        else:
+            path = 'venv/cache/2015_cloudtrail/2015/01/'+ str(uu)
+        files = []
+        #path = 'venv/cache/2015_cloudtrail/2015/01/08'
+        events = []
+        d = {}
+        #all1 = []
+        overall = []
+        for r, d, f in os.walk(path):
+            for file in f:
+                if file.endswith('.json'):
+                    files.append(os.path.join(r, file))  
+        for index, js in enumerate(files):
+            with open(js, 'r') as f:
+                datastore = json.load(f)
+                for x in range(len(datastore['Records'])):
+                    events.append(datastore['Records'][x]['eventName'])
+        newevent = {}
+        newevent = Counter(events)
+        #dd = OrderedDict(sorted(newevent.items(), key=lambda x: x[1]))
+        #all1 = []
+        all1.append(newevent)
+    overall.append(all1)
+    orig = collections.Counter()
+    for ele in range(0, len(all1)):
+        #vv.append(all1[ele])
+        orig = orig + all1[ele]
+    #for i in all1:
+     #   add = orig + i
+    nn = {}
+    d = {}
+    up = []
+    dl = []
+    h = []
+    nn = Counter(orig)
+    ff = OrderedDict(sorted(nn.items(), key=lambda x: x[1]))
+    hh = [value for key,value in ff.items()]
+    d.update({'total_events' : sum(hh) })
+    all2.append(d)
+    return jsonify(all2)
+
+
+
+# to get total vpcs in all regions in an account
+@app.route('/totalvpcs', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def totalvpcs():
+    #location=request.args.get('location')
+    client = boto3.client('ec2', region_name='us-east-1')
+    err = {}
+    #RunningInstances = []
+    regionnames =[]
+    nacl=[]
+    subnet=[]
+    #allobjects = {}
+    err.update({'message':"400"})
+    try:
+        val = []
+        filters = [{'Name': 'tag:Name', 'Values': ['*'] }]
+        allstate = []
+        response = client.describe_regions()
+        jj = list(response['Regions'])
+        for i in jj:
+            val.append(i.get('RegionName'))
+        #regionnames = list(regions)
+        for x in range(len(val)):
+            b = val[x]
+            d = {}
+            ec2 = boto3.client('ec2', region_name=b)
+            vpcs = ec2.describe_vpcs()
+            nacls = ec2.describe_network_acls()
+            subnets = ec2.describe_subnets()
+            allstate.append(len(vpcs))
+            nacl.append(len(nacls))
+            subnet.append(len(subnets))
+        d1={}
+        d1.update({"totalvpcs":sum(allstate)})
+        d1.update({"totalsubnets":sum(subnet)})
+        d1.update({"totalnacls":sum(nacl)})
+        ll = []
+        ll.append(d1)
+        return jsonify(ll)
+    except ClientError as e:    
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+
+
+# to get total subnets in all regions in an account
+@app.route('/totalsubnets', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def totalsubnets():
+    #location=request.args.get('location')
+    client = boto3.client('ec2', region_name='us-east-1')
+    err = {}
+    #RunningInstances = []
+    regionnames =[]
+    #allobjects = {}
+    err.update({'message':"400"})
+    try:
+        val = []
+        allstate = []
+        response = client.describe_regions()
+        jj = list(response['Regions'])
+        for i in jj:
+            val.append(i.get('RegionName'))
+        #regionnames = list(regions)
+        for x in range(len(val)):
+            b = val[x]
+            d = {}
+            ec2 = boto3.client('ec2', region_name=b)
+            subnets = ec2.describe_subnets()
+            allstate.append(len(subnets))
+        d1={}
+        d1.update({"totalsubnets":sum(allstate)})
+        ll = []
+        ll.append(d1)
+        return jsonify(ll)
+    except ClientError as e:    
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+
+
+# to get total subnets in all regions in an account
+@app.route('/totalnacl', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def totalnacl():
+    #location=request.args.get('location')
+    client = boto3.client('ec2', region_name='us-east-1')
+    err = {}
+    #RunningInstances = []
+    regionnames =[]
+    #allobjects = {}
+    err.update({'message':"400"})
+    try:
+        val = []
+        allstate = []
+        response = client.describe_regions()
+        jj = list(response['Regions'])
+        for i in jj:
+            val.append(i.get('RegionName'))
+        #regionnames = list(regions)
+        for x in range(len(val)):
+            b = val[x]
+            d = {}
+            ec2 = boto3.client('ec2', region_name=b)
+            nacls = ec2.describe_network_acls()
+            allstate.append(len(nacls))
+        d1={}
+        d1.update({"totalnacl":sum(allstate)})
+        ll = []
+        ll.append(d1)
+        return jsonify(ll)
+    except ClientError as e:    
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+
+
+
+#get total events occured in a day
+@app.route('/eventscount')
+def eventscount():
+    path = 'venv/cache/2015_cloudtrail/2015/01/01'
+    path_to_json = 'venv/cache/2015_cloudtrail/2015/01/01'
+    json_files = [pos_json for pos_json in os.listdir(path_to_json) if pos_json.endswith('.json')]
+    files = []
+    events = []
+    eventtime = []
+    username = []
+    src = []
+    arn = []
+    d = {}
+    overall = []
+    for r, d, f in os.walk(path):
+        for file in f:
+            if '.json' in file:
+                files.append(os.path.join(r, file))         
+    for index, js in enumerate(files):
+        with open(js, 'r') as f:
+            datastore = json.load(f)
+            for x in range(len(datastore['Records'])):
+                events.append(datastore['Records'][x]['eventName'])
+                eventtime.append(datastore['Records'][x]['eventTime'])
+                username.append(datastore['Records'][x]['userIdentity']['userName'])
+                arn.append(datastore['Records'][x]['userIdentity']['arn'])
+                src.append(datastore['Records'][x]['sourceIPAddress'])
+        d = {}
+        d.update({'TotalEvents' : len(events)})
+        overall = []
+    overall = []
+    overall.append(d)
+    return jsonify(overall)
+   
+
+
+
+
+
+
+
 #get the errors occured in any given month
 @app.route('/totaleventsinaday')
 @cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
@@ -1355,17 +1661,93 @@ def totaleventsinaday():
     overall = []
     overall.append(d)
     return jsonify(overall)
-    
-@app.route('/paths')
-def contentpaths():
-    path = 'venv/cache/2015_cloudtrail/2015/01/'+ str(x)
-    #d = {}
-    #d.update({'pp' : path})
-    overall1 = []
-    overall1.append(path)
-    return jsonify(overall1)
-    return(path)
 
+from smart_open import smart_open
+
+   
     
+    
+    
+@app.route('/readfiless', methods = ['GET', 'POST'])
+@cross_origin(supports_credentials=True,origin='*', methods = ['GET','POST','OPTIONS'])
+@cross_origin(headers=['Content-Type'])
+def readfiless():
+    #bucket_name_m=request.args.get('bucket')
+    #s3_resource = boto3.resource('s3')
+    err = {}
+    err.update({'message':"400"})
+    try:
+        with smart_open('s3://bucketsummer/361166629815_CloudTrail_us-east-1_20150101T0000Z_nqSzxQ623cykwe1r.json', 'rb') as s3_source:
+            for line in s3_source:
+                print(line.decode('utf8'))
+                dataa = line.decode('utf8')
+        #my_bucket = s3_resource.Bucket('bucketsummer')
+        #summaries = my_bucket.objects.all()
+        #result = users_schema.dump(summaries)
+        #dataa = summaries.get()['Body'].read()
+        d1={}
+        d1.update({'message':"200"})
+        d1.update({'data':dataa})
+        return jsonify(d1)
+    except ClientError as e:
+        err.update({'Error':e.response['Error']['Code']})
+        return jsonify(err)
+    
+
+
+
+#what's the average number of fields across all the .csv files?
+@app.route('/csv_quest1')
+def csv_quest1():
+    path = 'venv/csv_assessment'
+    files = []
+    num_cols=[]
+    for r, d, f in os.walk(path):
+        for file in f:
+            if '.csv' in file:
+                files.append(os.path.join(r, file)) 
+    for filename in files:
+        df = pd.read_csv(filename, index_col=None, header=0)
+        num_cols.append(len(df.columns))
+    average_columns= sum(num_cols)/len(num_cols)
+    return ' %f' % average_columns
+
+         
+#what's the total number or rows for the all the .csv files?
+@app.route('/csv_quest2')
+def csv_quest2():
+    path = 'venv/csv_assessment'
+    files = []
+    num_rows=[]
+    for r, d, f in os.walk(path):
+        for file in f:
+            if '.csv' in file:
+                files.append(os.path.join(r, file)) 
+    for filename in files:
+        df = pd.read_csv(filename, index_col=None, header=0)
+        num_rows.append(df.shape[0] + 1)
+    print(num_rows)
+    total_rows= sum(num_rows)
+    return ' %f' % total_rows
+    
+    
+#what's the total number or rows for the all the .csv files?
+@app.route('/csv_quest3')
+def csv_quest3():
+    path = 'venv/csv_assessment'
+    files = []
+    num_rows=[]
+    for r, d, f in os.walk(path):
+        for file in f:
+            if '.csv' in file:
+                files.append(os.path.join(r, file)) 
+    for filename in files:
+        df = pd.read_csv(filename, index_col=None, header=0)
+        num_rows.append(df.shape[0] + 1)
+    print(num_rows)
+    total_rows= sum(num_rows)
+    return ' %f' % total_rows
+
+
 if __name__ == '__main__':
     app.run()
